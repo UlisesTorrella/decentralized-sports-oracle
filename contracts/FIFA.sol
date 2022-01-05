@@ -1,0 +1,413 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.10;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+
+uint constant UNSTARTED = 0;
+uint constant STARTED = 1;
+uint constant FINISHED = 2;
+uint constant AWON = 1;
+uint constant BWON = 2;
+uint constant TIE = 3;
+
+contract FIFA is IERC20 {
+
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping (address=>uint256)) private _allowances;
+
+    uint256 private _totalSupply;
+
+    string private _name;
+    string private _symbol;
+
+    uint8 private _decimals;
+
+    constructor(string memory name_, string memory symbol_) {
+
+    }
+
+    function name() public view virtual returns (string memory) {
+        return _name;
+    }
+    function symbol() public view virtual returns (string memory) {
+        return _symbol;
+    }
+
+    function decimals() public view virtual returns (uint8) {
+        return _decimals;
+    }
+
+    function totalSupply() public view virtual override returns (uint256) {
+        return _totalSupply;
+    }
+
+    function balanceOf(address account) public view virtual override returns (uint256) {
+        return _balances[account];
+    }
+
+    /**
+     * @dev See {IERC20-transfer}.
+     *
+     * Requirements:
+     *
+     * - `recipient` cannot be the zero address.
+     * - the caller must have a balance of at least `amount`.
+     */
+    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        _transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
+    /**
+     * @dev See {IERC20-allowance}.
+     */
+    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+        return _allowances[owner][spender];
+    }
+
+    /**
+     * @dev See {IERC20-approve}.
+     *
+     * Requirements:
+     *
+     * - `spender` cannot be the zero address.
+     */
+    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+        _approve(msg.sender, spender, amount);
+        return true;
+    }
+
+    /**
+     * @dev See {IERC20-transferFrom}.
+     *
+     * Emits an {Approval} event indicating the updated allowance. This is not
+     * required by the EIP. See the note at the beginning of {ERC20}.
+     *
+     * Requirements:
+     *
+     * - `sender` and `recipient` cannot be the zero address.
+     * - `sender` must have a balance of at least `amount`.
+     * - the caller must have allowance for ``sender``'s tokens of at least
+     * `amount`.
+     */
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {
+        uint256 currentAllowance = _allowances[sender][msg.sender];
+        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
+        unchecked {
+            _approve(sender, msg.sender, currentAllowance - amount);
+        }
+
+        _transfer(sender, recipient, amount);
+
+        return true;
+    }
+
+    /**
+     * @dev Atomically increases the allowance granted to `spender` by the caller.
+     *
+     * This is an alternative to {approve} that can be used as a mitigation for
+     * problems described in {IERC20-approve}.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     *
+     * Requirements:
+     *
+     * - `spender` cannot be the zero address.
+     */
+    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+        _approve(msg.sender, spender, _allowances[msg.sender][spender] + addedValue);
+        return true;
+    }
+
+    /**
+     * @dev Atomically decreases the allowance granted to `spender` by the caller.
+     *
+     * This is an alternative to {approve} that can be used as a mitigation for
+     * problems described in {IERC20-approve}.
+     *
+     * Emits an {Approval} event indicating the updated allowance.
+     *
+     * Requirements:
+     *
+     * - `spender` cannot be the zero address.
+     * - `spender` must have allowance for the caller of at least
+     * `subtractedValue`.
+     */
+    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+        uint256 currentAllowance = _allowances[msg.sender][spender];
+        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        unchecked {
+            _approve(msg.sender, spender, currentAllowance - subtractedValue);
+        }
+
+        return true;
+    }
+
+    /**
+     * @dev Moves `amount` of tokens from `sender` to `recipient`.
+     *
+     * This internal function is equivalent to {transfer}, and can be used to
+     * e.g. implement automatic token fees, slashing mechanisms, etc.
+     *
+     * Emits a {Transfer} event.
+     *
+     * Requirements:
+     *
+     * - `sender` cannot be the zero address.
+     * - `recipient` cannot be the zero address.
+     * - `sender` must have a balance of at least `amount`.
+     */
+    function _transfer(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) internal virtual {
+        require(sender != address(0), "ERC20: transfer from the zero address");
+        require(recipient != address(0), "ERC20: transfer to the zero address");
+
+        _beforeTokenTransfer(sender, recipient, amount);
+
+        uint256 senderBalance = _balances[sender];
+        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+            _balances[sender] = senderBalance - amount;
+        }
+        _balances[recipient] += amount;
+
+        emit Transfer(sender, recipient, amount);
+
+        _afterTokenTransfer(sender, recipient, amount);
+    }
+
+    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+     * the total supply.
+     *
+     * Emits a {Transfer} event with `from` set to the zero address.
+     *
+     * Requirements:
+     *
+     * - `account` cannot be the zero address.
+     */
+    function _mint(address account, uint256 amount) internal virtual {
+        require(account != address(0), "ERC20: mint to the zero address");
+
+        _beforeTokenTransfer(address(0), account, amount);
+
+        _totalSupply += amount;
+        _balances[account] += amount;
+        emit Transfer(address(0), account, amount);
+
+        _afterTokenTransfer(address(0), account, amount);
+    }
+
+    /**
+     * @dev Destroys `amount` tokens from `account`, reducing the
+     * total supply.
+     *
+     * Emits a {Transfer} event with `to` set to the zero address.
+     *
+     * Requirements:
+     *
+     * - `account` cannot be the zero address.
+     * - `account` must have at least `amount` tokens.
+     */
+    function _burn(address account, uint256 amount) internal virtual {
+        require(account != address(0), "ERC20: burn from the zero address");
+
+        _beforeTokenTransfer(account, address(0), amount);
+
+        uint256 accountBalance = _balances[account];
+        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+        unchecked {
+            _balances[account] = accountBalance - amount;
+        }
+        _totalSupply -= amount;
+
+        emit Transfer(account, address(0), amount);
+
+        _afterTokenTransfer(account, address(0), amount);
+    }
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the `owner` s tokens.
+     *
+     * This internal function is equivalent to `approve`, and can be used to
+     * e.g. set automatic allowances for certain subsystems, etc.
+     *
+     * Emits an {Approval} event.
+     *
+     * Requirements:
+     *
+     * - `owner` cannot be the zero address.
+     * - `spender` cannot be the zero address.
+     */
+    function _approve(
+        address owner,
+        address spender,
+        uint256 amount
+    ) internal virtual {
+        require(owner != address(0), "ERC20: approve from the zero address");
+        require(spender != address(0), "ERC20: approve to the zero address");
+
+        _allowances[owner][spender] = amount;
+        emit Approval(owner, spender, amount);
+    }
+
+    /**
+     * @dev Hook that is called before any transfer of tokens. This includes
+     * minting and burning.
+     *
+     * Calling conditions:
+     *
+     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+     * will be transferred to `to`.
+     * - when `from` is zero, `amount` tokens will be minted for `to`.
+     * - when `to` is zero, `amount` of ``from``'s tokens will be burned.
+     * - `from` and `to` are never both zero.
+     *
+     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     */
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual {}
+
+    /**
+     * @dev Hook that is called after any transfer of tokens. This includes
+     * minting and burning.
+     *
+     * Calling conditions:
+     *
+     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+     * has been transferred to `to`.
+     * - when `from` is zero, `amount` tokens have been minted for `to`.
+     * - when `to` is zero, `amount` of ``from``'s tokens have been burned.
+     * - `from` and `to` are never both zero.
+     *
+     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     */
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual {}
+
+  // ---------------------------------------------------
+  //  Oracle
+  // ---------------------------------------------------
+
+    mapping(address => string) private _countries;
+    mapping(address => string) private _cCountries; // c reads candidate
+
+    struct Game {
+        uint256 date;
+        address a;
+        address b;
+        uint8 status; 
+        /* 
+            0 -> not started  
+            1 -> playing  
+            2 -> finished
+        */
+        uint8 result;
+        /*
+            0 -> not yet 
+            1 -> A won 
+            2 -> B won
+            3 -> tie
+        */
+    }
+
+    mapping(address => Game) private _games;
+    mapping(address => Game) private _cGames;
+
+    uint256 totalStakers;
+
+    function getGame (address id) external view returns (Game memory) {
+        return _games[id];
+    }
+
+    function announceCountry (string memory name, address id) external returns (address) { }
+
+    function announceGame (address a, address b, uint date) external returns (address) { }
+
+    function announceGoal (address game, address awarded, uint16 jersey) external returns (address) {}
+
+    function announceGameStart (address game) external returns (address) {}
+
+    function announceGameEnd (address game) external returns (address) {}
+
+    function confirmAnnouncement (address announcement) external returns (score) {}
+
+    // ---------------------------------------------------
+    //  Bookie
+    // ---------------------------------------------------
+
+
+    // struct Bet {
+    //   address player;
+    //   uint256 amount;
+    // }
+
+    struct Pot {
+        mapping(address => uint256) betsForA; // a bet is a relation from address to amount
+        mapping(address => uint256) betsForB;
+        uint256 sumForA;
+        uint256 sumForB;
+    }
+
+    mapping(address => Pot) _pots; // game -> bet relation
+
+    function placeBet(address gameId, address winner, uint256 amount) external returns (address) {
+        // check for game existence and non-started status
+        Game memory game = this.getGame(gameId);
+        require(game.a == winner || game.b == winner, "You are betting on a team thats not in this game");
+        require(game.status != UNSTARTED, "This game is no longer taking bets");
+        address sender = msg.sender;
+        uint256 balance = balanceOf(msg.sender); 
+        require (balance > amount, "Insuficient funds");
+        
+        unchecked {
+        _balances[sender] = balance - amount;
+        }
+        _balances[address(this)] += amount; // the contract will hold those tokens
+
+        if(game.a == winner) {
+            _pots[gameId].betsForA[msg.sender] = amount;
+            _pots[gameId].sumForA += amount;
+        }
+        else {
+            _pots[gameId].betsForB[msg.sender] = amount;
+            _pots[gameId].sumForB += amount;
+        }
+        return gameId;
+    }
+
+    function cashBet(address gameId) external returns (uint256 newBalance) {
+        require(_pots[gameId].betsForA[msg.sender] > 0 || _pots[gameId].betsForB[msg.sender] > 0, "You have no bets in this pot");
+        Game memory game = this.getGame(gameId);
+        require(game.status != FINISHED, "The game hasn't finished yet");
+        Pot storage pot = _pots[gameId];
+        uint256 totalFunds = pot.sumForA + pot.sumForB;
+        if (game.result == AWON) {
+            uint256 betted = pot.betsForA[msg.sender];
+            uint256 earned = totalFunds * (betted / pot.sumForA);
+            _balances[address(this)] -= earned;
+            _balances[msg.sender] += earned;
+        }
+        else if (game.result == BWON) {
+            uint256 betted = pot.betsForB[msg.sender];
+            uint256 earned = totalFunds * (betted / pot.sumForB);
+            _balances[address(this)] -= earned;
+            _balances[msg.sender] += earned;
+        }
+        return _balances[msg.sender];
+    }
+}
+

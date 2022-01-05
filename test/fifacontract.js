@@ -1,6 +1,6 @@
-const MetaCoin = artifacts.require("MetaCoin");
+const MetaCoin = artifacts.require("FIFA");
 
-contract('MetaCoin', (accounts) => {
+contract('FIFA', (accounts) => {
   it('should put 10000 MetaCoin in the first account', async () => {
     const metaCoinInstance = await MetaCoin.deployed();
     const balance = await metaCoinInstance.getBalance.call(accounts[0]);
