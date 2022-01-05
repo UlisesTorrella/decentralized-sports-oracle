@@ -36,6 +36,7 @@ contract FIFA is IERC20, Oracle {
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
+        _balances[tx.origin] = 10000;
     }
 
     function name() public view returns (string memory) {
