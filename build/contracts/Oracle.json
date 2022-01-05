@@ -1,0 +1,1941 @@
+{
+  "contractName": "Oracle",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "id",
+          "type": "address"
+        }
+      ],
+      "name": "getGame",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "a",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "b",
+              "type": "address"
+            },
+            {
+              "internalType": "uint8",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "result",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "scoreA",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "scoreB",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct Oracle.Game",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "announce",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"announce\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"id\",\"type\":\"address\"}],\"name\":\"getGame\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"date\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"b\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"result\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"scoreA\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"scoreB\",\"type\":\"uint8\"}],\"internalType\":\"struct Oracle.Game\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Oracle.sol\":\"Oracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Oracle.sol\":{\"keccak256\":\"0x551a4fc8d12d3b3eaf94f4aab72413dbfddb84c150635236e3ff922c58ee93fe\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://414767a64a264956d5e246177ac4e73bc376f32ab3b35fb67204cc4a5823acca\",\"dweb:/ipfs/QmcDRpw9DrRgi6JtY5wuUumuenvCM1QvajKmee6J8n6t71\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.10;\n\nuint constant UNSTARTED = 0;\nuint constant STARTED = 1;\nuint constant FINISHED = 2;\nuint constant AWON = 1;\nuint constant BWON = 2;\nuint constant TIE = 3;\n\nabstract contract Oracle {\n\n  // ---------------------------------------------------\n  //  Oracle\n  // ---------------------------------------------------\n\n    mapping(address => string) private _teams;\n    mapping(address => string) private _cTeams; // c reads candidate\n\n    struct Game {\n        uint256 date;\n        address a;\n        address b;\n        uint8 status; \n        /* \n            0 -> not started  \n            1 -> playing  \n            2 -> finished\n        */\n        uint8 result;\n        /*\n            0 -> not yet \n            1 -> A won \n            2 -> B won\n            3 -> tie\n        */\n        uint8 scoreA;\n        uint8 scoreB;\n    }\n\n    mapping(address => Game) private _games;\n    mapping(address => Game) private _cGames;\n\n    uint256 totalStakers;\n\n    function getGame (address id) external view returns (Game memory) {\n        return _games[id];\n    }\n\n    function announce() virtual external {}\n}",
+  "sourcePath": "/home/ulince/Data/Test/Truffle/contracts/Oracle.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/Oracle.sol",
+    "exportedSymbols": {
+      "AWON": [
+        430
+      ],
+      "BWON": [
+        433
+      ],
+      "FINISHED": [
+        427
+      ],
+      "Oracle": [
+        489
+      ],
+      "STARTED": [
+        424
+      ],
+      "TIE": [
+        436
+      ],
+      "UNSTARTED": [
+        421
+      ]
+    },
+    "id": 490,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 418,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:24:3"
+      },
+      {
+        "constant": true,
+        "id": 421,
+        "mutability": "constant",
+        "name": "UNSTARTED",
+        "nameLocation": "72:9:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "58:27:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 419,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "58:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "30",
+          "id": 420,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "84:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_0_by_1",
+            "typeString": "int_const 0"
+          },
+          "value": "0"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 424,
+        "mutability": "constant",
+        "name": "STARTED",
+        "nameLocation": "101:7:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "87:25:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 422,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "87:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "31",
+          "id": 423,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "111:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_1_by_1",
+            "typeString": "int_const 1"
+          },
+          "value": "1"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 427,
+        "mutability": "constant",
+        "name": "FINISHED",
+        "nameLocation": "128:8:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "114:26:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 425,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "114:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "32",
+          "id": 426,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "139:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_2_by_1",
+            "typeString": "int_const 2"
+          },
+          "value": "2"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 430,
+        "mutability": "constant",
+        "name": "AWON",
+        "nameLocation": "156:4:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "142:22:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 428,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "142:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "31",
+          "id": 429,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "163:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_1_by_1",
+            "typeString": "int_const 1"
+          },
+          "value": "1"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 433,
+        "mutability": "constant",
+        "name": "BWON",
+        "nameLocation": "180:4:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "166:22:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 431,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "166:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "32",
+          "id": 432,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "187:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_2_by_1",
+            "typeString": "int_const 2"
+          },
+          "value": "2"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 436,
+        "mutability": "constant",
+        "name": "TIE",
+        "nameLocation": "204:3:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "190:21:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 434,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "190:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "33",
+          "id": 435,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "210:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_3_by_1",
+            "typeString": "int_const 3"
+          },
+          "value": "3"
+        },
+        "visibility": "internal"
+      },
+      {
+        "abstract": true,
+        "baseContracts": [],
+        "canonicalName": "Oracle",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 489,
+        "linearizedBaseContracts": [
+          489
+        ],
+        "name": "Oracle",
+        "nameLocation": "232:6:3",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 440,
+            "mutability": "mutable",
+            "name": "_teams",
+            "nameLocation": "409:6:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "374:41:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+              "typeString": "mapping(address => string)"
+            },
+            "typeName": {
+              "id": 439,
+              "keyType": {
+                "id": 437,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "382:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "374:26:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+                "typeString": "mapping(address => string)"
+              },
+              "valueType": {
+                "id": 438,
+                "name": "string",
+                "nodeType": "ElementaryTypeName",
+                "src": "393:6:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 444,
+            "mutability": "mutable",
+            "name": "_cTeams",
+            "nameLocation": "456:7:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "421:42:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+              "typeString": "mapping(address => string)"
+            },
+            "typeName": {
+              "id": 443,
+              "keyType": {
+                "id": 441,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "429:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "421:26:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+                "typeString": "mapping(address => string)"
+              },
+              "valueType": {
+                "id": 442,
+                "name": "string",
+                "nodeType": "ElementaryTypeName",
+                "src": "440:6:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "canonicalName": "Oracle.Game",
+            "id": 459,
+            "members": [
+              {
+                "constant": false,
+                "id": 446,
+                "mutability": "mutable",
+                "name": "date",
+                "nameLocation": "521:4:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "513:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 445,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "513:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 448,
+                "mutability": "mutable",
+                "name": "a",
+                "nameLocation": "543:1:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "535:9:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 447,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "535:7:3",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 450,
+                "mutability": "mutable",
+                "name": "b",
+                "nameLocation": "562:1:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "554:9:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 449,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "554:7:3",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 452,
+                "mutability": "mutable",
+                "name": "status",
+                "nameLocation": "579:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "573:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 451,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "573:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 454,
+                "mutability": "mutable",
+                "name": "result",
+                "nameLocation": "709:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "703:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 453,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "703:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 456,
+                "mutability": "mutable",
+                "name": "scoreA",
+                "nameLocation": "847:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "841:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 455,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "841:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 458,
+                "mutability": "mutable",
+                "name": "scoreB",
+                "nameLocation": "869:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "863:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 457,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "863:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Game",
+            "nameLocation": "498:4:3",
+            "nodeType": "StructDefinition",
+            "scope": 489,
+            "src": "491:391:3",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 464,
+            "mutability": "mutable",
+            "name": "_games",
+            "nameLocation": "921:6:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "888:39:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+              "typeString": "mapping(address => struct Oracle.Game)"
+            },
+            "typeName": {
+              "id": 463,
+              "keyType": {
+                "id": 460,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "896:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "888:24:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+                "typeString": "mapping(address => struct Oracle.Game)"
+              },
+              "valueType": {
+                "id": 462,
+                "nodeType": "UserDefinedTypeName",
+                "pathNode": {
+                  "id": 461,
+                  "name": "Game",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 459,
+                  "src": "907:4:3"
+                },
+                "referencedDeclaration": 459,
+                "src": "907:4:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Game_$459_storage_ptr",
+                  "typeString": "struct Oracle.Game"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 469,
+            "mutability": "mutable",
+            "name": "_cGames",
+            "nameLocation": "966:7:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "933:40:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+              "typeString": "mapping(address => struct Oracle.Game)"
+            },
+            "typeName": {
+              "id": 468,
+              "keyType": {
+                "id": 465,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "941:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "933:24:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+                "typeString": "mapping(address => struct Oracle.Game)"
+              },
+              "valueType": {
+                "id": 467,
+                "nodeType": "UserDefinedTypeName",
+                "pathNode": {
+                  "id": 466,
+                  "name": "Game",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 459,
+                  "src": "952:4:3"
+                },
+                "referencedDeclaration": 459,
+                "src": "952:4:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Game_$459_storage_ptr",
+                  "typeString": "struct Oracle.Game"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 471,
+            "mutability": "mutable",
+            "name": "totalStakers",
+            "nameLocation": "988:12:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "980:20:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 470,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "980:7:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 483,
+              "nodeType": "Block",
+              "src": "1073:34:3",
+              "statements": [
+                {
+                  "expression": {
+                    "baseExpression": {
+                      "id": 479,
+                      "name": "_games",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 464,
+                      "src": "1090:6:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+                        "typeString": "mapping(address => struct Oracle.Game storage ref)"
+                      }
+                    },
+                    "id": 481,
+                    "indexExpression": {
+                      "id": 480,
+                      "name": "id",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 473,
+                      "src": "1097:2:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "1090:10:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Game_$459_storage",
+                      "typeString": "struct Oracle.Game storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 478,
+                  "id": 482,
+                  "nodeType": "Return",
+                  "src": "1083:17:3"
+                }
+              ]
+            },
+            "functionSelector": "8d1a4b28",
+            "id": 484,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getGame",
+            "nameLocation": "1016:7:3",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 474,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 473,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "1033:2:3",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 484,
+                  "src": "1025:10:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 472,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1025:7:3",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1024:12:3"
+            },
+            "returnParameters": {
+              "id": 478,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 477,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 484,
+                  "src": "1060:11:3",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Game_$459_memory_ptr",
+                    "typeString": "struct Oracle.Game"
+                  },
+                  "typeName": {
+                    "id": 476,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 475,
+                      "name": "Game",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 459,
+                      "src": "1060:4:3"
+                    },
+                    "referencedDeclaration": 459,
+                    "src": "1060:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Game_$459_storage_ptr",
+                      "typeString": "struct Oracle.Game"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1059:13:3"
+            },
+            "scope": 489,
+            "src": "1007:100:3",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 487,
+              "nodeType": "Block",
+              "src": "1150:2:3",
+              "statements": []
+            },
+            "functionSelector": "8f970df0",
+            "id": 488,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "announce",
+            "nameLocation": "1122:8:3",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 485,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1130:2:3"
+            },
+            "returnParameters": {
+              "id": 486,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1150:0:3"
+            },
+            "scope": 489,
+            "src": "1113:39:3",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "external"
+          }
+        ],
+        "scope": 490,
+        "src": "214:940:3",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:1122:3"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/Oracle.sol",
+    "exportedSymbols": {
+      "AWON": [
+        430
+      ],
+      "BWON": [
+        433
+      ],
+      "FINISHED": [
+        427
+      ],
+      "Oracle": [
+        489
+      ],
+      "STARTED": [
+        424
+      ],
+      "TIE": [
+        436
+      ],
+      "UNSTARTED": [
+        421
+      ]
+    },
+    "id": 490,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 418,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:24:3"
+      },
+      {
+        "constant": true,
+        "id": 421,
+        "mutability": "constant",
+        "name": "UNSTARTED",
+        "nameLocation": "72:9:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "58:27:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 419,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "58:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "30",
+          "id": 420,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "84:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_0_by_1",
+            "typeString": "int_const 0"
+          },
+          "value": "0"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 424,
+        "mutability": "constant",
+        "name": "STARTED",
+        "nameLocation": "101:7:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "87:25:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 422,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "87:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "31",
+          "id": 423,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "111:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_1_by_1",
+            "typeString": "int_const 1"
+          },
+          "value": "1"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 427,
+        "mutability": "constant",
+        "name": "FINISHED",
+        "nameLocation": "128:8:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "114:26:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 425,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "114:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "32",
+          "id": 426,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "139:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_2_by_1",
+            "typeString": "int_const 2"
+          },
+          "value": "2"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 430,
+        "mutability": "constant",
+        "name": "AWON",
+        "nameLocation": "156:4:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "142:22:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 428,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "142:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "31",
+          "id": 429,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "163:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_1_by_1",
+            "typeString": "int_const 1"
+          },
+          "value": "1"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 433,
+        "mutability": "constant",
+        "name": "BWON",
+        "nameLocation": "180:4:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "166:22:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 431,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "166:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "32",
+          "id": 432,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "187:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_2_by_1",
+            "typeString": "int_const 2"
+          },
+          "value": "2"
+        },
+        "visibility": "internal"
+      },
+      {
+        "constant": true,
+        "id": 436,
+        "mutability": "constant",
+        "name": "TIE",
+        "nameLocation": "204:3:3",
+        "nodeType": "VariableDeclaration",
+        "scope": 490,
+        "src": "190:21:3",
+        "stateVariable": false,
+        "storageLocation": "default",
+        "typeDescriptions": {
+          "typeIdentifier": "t_uint256",
+          "typeString": "uint256"
+        },
+        "typeName": {
+          "id": 434,
+          "name": "uint",
+          "nodeType": "ElementaryTypeName",
+          "src": "190:4:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_uint256",
+            "typeString": "uint256"
+          }
+        },
+        "value": {
+          "hexValue": "33",
+          "id": 435,
+          "isConstant": false,
+          "isLValue": false,
+          "isPure": true,
+          "kind": "number",
+          "lValueRequested": false,
+          "nodeType": "Literal",
+          "src": "210:1:3",
+          "typeDescriptions": {
+            "typeIdentifier": "t_rational_3_by_1",
+            "typeString": "int_const 3"
+          },
+          "value": "3"
+        },
+        "visibility": "internal"
+      },
+      {
+        "abstract": true,
+        "baseContracts": [],
+        "canonicalName": "Oracle",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 489,
+        "linearizedBaseContracts": [
+          489
+        ],
+        "name": "Oracle",
+        "nameLocation": "232:6:3",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 440,
+            "mutability": "mutable",
+            "name": "_teams",
+            "nameLocation": "409:6:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "374:41:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+              "typeString": "mapping(address => string)"
+            },
+            "typeName": {
+              "id": 439,
+              "keyType": {
+                "id": 437,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "382:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "374:26:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+                "typeString": "mapping(address => string)"
+              },
+              "valueType": {
+                "id": 438,
+                "name": "string",
+                "nodeType": "ElementaryTypeName",
+                "src": "393:6:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 444,
+            "mutability": "mutable",
+            "name": "_cTeams",
+            "nameLocation": "456:7:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "421:42:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+              "typeString": "mapping(address => string)"
+            },
+            "typeName": {
+              "id": 443,
+              "keyType": {
+                "id": 441,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "429:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "421:26:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_string_storage_$",
+                "typeString": "mapping(address => string)"
+              },
+              "valueType": {
+                "id": 442,
+                "name": "string",
+                "nodeType": "ElementaryTypeName",
+                "src": "440:6:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_string_storage_ptr",
+                  "typeString": "string"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "canonicalName": "Oracle.Game",
+            "id": 459,
+            "members": [
+              {
+                "constant": false,
+                "id": 446,
+                "mutability": "mutable",
+                "name": "date",
+                "nameLocation": "521:4:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "513:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 445,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "513:7:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 448,
+                "mutability": "mutable",
+                "name": "a",
+                "nameLocation": "543:1:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "535:9:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 447,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "535:7:3",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 450,
+                "mutability": "mutable",
+                "name": "b",
+                "nameLocation": "562:1:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "554:9:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 449,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "554:7:3",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 452,
+                "mutability": "mutable",
+                "name": "status",
+                "nameLocation": "579:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "573:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 451,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "573:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 454,
+                "mutability": "mutable",
+                "name": "result",
+                "nameLocation": "709:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "703:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 453,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "703:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 456,
+                "mutability": "mutable",
+                "name": "scoreA",
+                "nameLocation": "847:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "841:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 455,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "841:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 458,
+                "mutability": "mutable",
+                "name": "scoreB",
+                "nameLocation": "869:6:3",
+                "nodeType": "VariableDeclaration",
+                "scope": 459,
+                "src": "863:12:3",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 457,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "863:5:3",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Game",
+            "nameLocation": "498:4:3",
+            "nodeType": "StructDefinition",
+            "scope": 489,
+            "src": "491:391:3",
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 464,
+            "mutability": "mutable",
+            "name": "_games",
+            "nameLocation": "921:6:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "888:39:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+              "typeString": "mapping(address => struct Oracle.Game)"
+            },
+            "typeName": {
+              "id": 463,
+              "keyType": {
+                "id": 460,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "896:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "888:24:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+                "typeString": "mapping(address => struct Oracle.Game)"
+              },
+              "valueType": {
+                "id": 462,
+                "nodeType": "UserDefinedTypeName",
+                "pathNode": {
+                  "id": 461,
+                  "name": "Game",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 459,
+                  "src": "907:4:3"
+                },
+                "referencedDeclaration": 459,
+                "src": "907:4:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Game_$459_storage_ptr",
+                  "typeString": "struct Oracle.Game"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 469,
+            "mutability": "mutable",
+            "name": "_cGames",
+            "nameLocation": "966:7:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "933:40:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+              "typeString": "mapping(address => struct Oracle.Game)"
+            },
+            "typeName": {
+              "id": 468,
+              "keyType": {
+                "id": 465,
+                "name": "address",
+                "nodeType": "ElementaryTypeName",
+                "src": "941:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "933:24:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+                "typeString": "mapping(address => struct Oracle.Game)"
+              },
+              "valueType": {
+                "id": 467,
+                "nodeType": "UserDefinedTypeName",
+                "pathNode": {
+                  "id": 466,
+                  "name": "Game",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 459,
+                  "src": "952:4:3"
+                },
+                "referencedDeclaration": 459,
+                "src": "952:4:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Game_$459_storage_ptr",
+                  "typeString": "struct Oracle.Game"
+                }
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 471,
+            "mutability": "mutable",
+            "name": "totalStakers",
+            "nameLocation": "988:12:3",
+            "nodeType": "VariableDeclaration",
+            "scope": 489,
+            "src": "980:20:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 470,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "980:7:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 483,
+              "nodeType": "Block",
+              "src": "1073:34:3",
+              "statements": [
+                {
+                  "expression": {
+                    "baseExpression": {
+                      "id": 479,
+                      "name": "_games",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 464,
+                      "src": "1090:6:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_address_$_t_struct$_Game_$459_storage_$",
+                        "typeString": "mapping(address => struct Oracle.Game storage ref)"
+                      }
+                    },
+                    "id": 481,
+                    "indexExpression": {
+                      "id": 480,
+                      "name": "id",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 473,
+                      "src": "1097:2:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "1090:10:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Game_$459_storage",
+                      "typeString": "struct Oracle.Game storage ref"
+                    }
+                  },
+                  "functionReturnParameters": 478,
+                  "id": 482,
+                  "nodeType": "Return",
+                  "src": "1083:17:3"
+                }
+              ]
+            },
+            "functionSelector": "8d1a4b28",
+            "id": 484,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getGame",
+            "nameLocation": "1016:7:3",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 474,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 473,
+                  "mutability": "mutable",
+                  "name": "id",
+                  "nameLocation": "1033:2:3",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 484,
+                  "src": "1025:10:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 472,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1025:7:3",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1024:12:3"
+            },
+            "returnParameters": {
+              "id": 478,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 477,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 484,
+                  "src": "1060:11:3",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Game_$459_memory_ptr",
+                    "typeString": "struct Oracle.Game"
+                  },
+                  "typeName": {
+                    "id": 476,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 475,
+                      "name": "Game",
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 459,
+                      "src": "1060:4:3"
+                    },
+                    "referencedDeclaration": 459,
+                    "src": "1060:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Game_$459_storage_ptr",
+                      "typeString": "struct Oracle.Game"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1059:13:3"
+            },
+            "scope": 489,
+            "src": "1007:100:3",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 487,
+              "nodeType": "Block",
+              "src": "1150:2:3",
+              "statements": []
+            },
+            "functionSelector": "8f970df0",
+            "id": 488,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "announce",
+            "nameLocation": "1122:8:3",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 485,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1130:2:3"
+            },
+            "returnParameters": {
+              "id": 486,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1150:0:3"
+            },
+            "scope": 489,
+            "src": "1113:39:3",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "external"
+          }
+        ],
+        "scope": 490,
+        "src": "214:940:3",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:1122:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.10+commit.fc410830.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-01-05T18:57:34.244Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

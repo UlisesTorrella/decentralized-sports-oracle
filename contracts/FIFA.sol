@@ -1,17 +1,27 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
+import "./Oracle.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
-uint constant UNSTARTED = 0;
-uint constant STARTED = 1;
-uint constant FINISHED = 2;
-uint constant AWON = 1;
-uint constant BWON = 2;
-uint constant TIE = 3;
+contract FIFA is IERC20, Oracle {
 
-contract FIFA is IERC20 {
+    // mapping(address => uint256) private _balances;
+    // mapping(address => mapping (address=>uint256)) private _allowances;
+
+    // uint256 private _totalSupply;
+
+    // string private _name;
+    // string private _symbol;
+
+    // uint8 private _decimals;
+
+    // Anouncement logic
+
+    function doNothing() external pure returns (bool) {
+        return false;
+    }
 
     mapping(address => uint256) private _balances;
     mapping(address => mapping (address=>uint256)) private _allowances;
@@ -24,13 +34,14 @@ contract FIFA is IERC20 {
     uint8 private _decimals;
 
     constructor(string memory name_, string memory symbol_) {
-
+        _name = name_;
+        _symbol = symbol_;
     }
 
-    function name() public view virtual returns (string memory) {
+    function name() public view returns (string memory) {
         return _name;
     }
-    function symbol() public view virtual returns (string memory) {
+    function symbol() public view returns (string memory) {
         return _symbol;
     }
 
@@ -298,116 +309,5 @@ contract FIFA is IERC20 {
         uint256 amount
     ) internal virtual {}
 
-  // ---------------------------------------------------
-  //  Oracle
-  // ---------------------------------------------------
-
-    mapping(address => string) private _countries;
-    mapping(address => string) private _cCountries; // c reads candidate
-
-    struct Game {
-        uint256 date;
-        address a;
-        address b;
-        uint8 status; 
-        /* 
-            0 -> not started  
-            1 -> playing  
-            2 -> finished
-        */
-        uint8 result;
-        /*
-            0 -> not yet 
-            1 -> A won 
-            2 -> B won
-            3 -> tie
-        */
-    }
-
-    mapping(address => Game) private _games;
-    mapping(address => Game) private _cGames;
-
-    uint256 totalStakers;
-
-    function getGame (address id) external view returns (Game memory) {
-        return _games[id];
-    }
-
-    function announceCountry (string memory name, address id) external returns (address) { }
-
-    function announceGame (address a, address b, uint date) external returns (address) { }
-
-    function announceGoal (address game, address awarded, uint16 jersey) external returns (address) {}
-
-    function announceGameStart (address game) external returns (address) {}
-
-    function announceGameEnd (address game) external returns (address) {}
-
-    function confirmAnnouncement (address announcement) external returns (score) {}
-
-    // ---------------------------------------------------
-    //  Bookie
-    // ---------------------------------------------------
-
-
-    // struct Bet {
-    //   address player;
-    //   uint256 amount;
-    // }
-
-    struct Pot {
-        mapping(address => uint256) betsForA; // a bet is a relation from address to amount
-        mapping(address => uint256) betsForB;
-        uint256 sumForA;
-        uint256 sumForB;
-    }
-
-    mapping(address => Pot) _pots; // game -> bet relation
-
-    function placeBet(address gameId, address winner, uint256 amount) external returns (address) {
-        // check for game existence and non-started status
-        Game memory game = this.getGame(gameId);
-        require(game.a == winner || game.b == winner, "You are betting on a team thats not in this game");
-        require(game.status != UNSTARTED, "This game is no longer taking bets");
-        address sender = msg.sender;
-        uint256 balance = balanceOf(msg.sender); 
-        require (balance > amount, "Insuficient funds");
-        
-        unchecked {
-        _balances[sender] = balance - amount;
-        }
-        _balances[address(this)] += amount; // the contract will hold those tokens
-
-        if(game.a == winner) {
-            _pots[gameId].betsForA[msg.sender] = amount;
-            _pots[gameId].sumForA += amount;
-        }
-        else {
-            _pots[gameId].betsForB[msg.sender] = amount;
-            _pots[gameId].sumForB += amount;
-        }
-        return gameId;
-    }
-
-    function cashBet(address gameId) external returns (uint256 newBalance) {
-        require(_pots[gameId].betsForA[msg.sender] > 0 || _pots[gameId].betsForB[msg.sender] > 0, "You have no bets in this pot");
-        Game memory game = this.getGame(gameId);
-        require(game.status != FINISHED, "The game hasn't finished yet");
-        Pot storage pot = _pots[gameId];
-        uint256 totalFunds = pot.sumForA + pot.sumForB;
-        if (game.result == AWON) {
-            uint256 betted = pot.betsForA[msg.sender];
-            uint256 earned = totalFunds * (betted / pot.sumForA);
-            _balances[address(this)] -= earned;
-            _balances[msg.sender] += earned;
-        }
-        else if (game.result == BWON) {
-            uint256 betted = pot.betsForB[msg.sender];
-            uint256 earned = totalFunds * (betted / pot.sumForB);
-            _balances[address(this)] -= earned;
-            _balances[msg.sender] += earned;
-        }
-        return _balances[msg.sender];
-    }
 }
 

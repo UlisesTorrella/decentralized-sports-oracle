@@ -1,0 +1,313 @@
+{
+  "contractName": "TokenizedOracle",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "announce",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "id",
+          "type": "address"
+        }
+      ],
+      "name": "getGame",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "a",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "b",
+              "type": "address"
+            },
+            {
+              "internalType": "uint8",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "result",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "scoreA",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint8",
+              "name": "scoreB",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct Oracle.Game",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"announce\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"id\",\"type\":\"address\"}],\"name\":\"getGame\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"date\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"b\",\"type\":\"address\"},{\"internalType\":\"uint8\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"result\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"scoreA\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"scoreB\",\"type\":\"uint8\"}],\"internalType\":\"struct Oracle.Game\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/TokenizedOracle.sol\":\"TokenizedOracle\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0x61437cb513a887a1bbad006e7b1c8b414478427d33de47c5600af3c748f108da\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2c3d0973630ed74f2b5ce3944677a885dc70ec32fc83b35f55045a10224da32b\",\"dweb:/ipfs/QmbefZ5RoEZKNHXCALfh683PnaNYzKPcKMFjyY1DVAgq8A\"]},\"project:/contracts/Oracle.sol\":{\"keccak256\":\"0x551a4fc8d12d3b3eaf94f4aab72413dbfddb84c150635236e3ff922c58ee93fe\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://414767a64a264956d5e246177ac4e73bc376f32ab3b35fb67204cc4a5823acca\",\"dweb:/ipfs/QmcDRpw9DrRgi6JtY5wuUumuenvCM1QvajKmee6J8n6t71\"]},\"project:/contracts/Token.sol\":{\"keccak256\":\"0x07012cd99b4b85cad56c8a0e3868107161a2fe5a793859e1d230066b987d1144\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bd2f7a52263976dc97169374f6c3c0216c72ac0571f5d681b05a2cc36268e02e\",\"dweb:/ipfs/QmSgozUPcT8MEbbyWCzirpKL1gzxkpuqWGDSgPR3tGPEcJ\"]},\"project:/contracts/TokenizedOracle.sol\":{\"keccak256\":\"0x3de13d15b2883eed09d3b10a0179f8a733724e245e77af47adeffc32e269ed80\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://13dde8f1d879b4e046f4dc057046f20f867d02caf1b0d1f4e0f81d73a78fe5f4\",\"dweb:/ipfs/QmVbrzxoVmGmM7iVZJonB74q3CKmQVHTZTHHRuustpY85S\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.10;\n\nimport \"./Token.sol\";\n\nimport \"./Oracle.sol\";\n\nabstract contract TokenizedOracle is Oracle {}\n\n",
+  "sourcePath": "/home/ulince/Data/Test/Truffle/contracts/TokenizedOracle.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/TokenizedOracle.sol",
+    "exportedSymbols": {
+      "AWON": [
+        430
+      ],
+      "BWON": [
+        433
+      ],
+      "FINISHED": [
+        427
+      ],
+      "IERC20": [
+        77
+      ],
+      "Oracle": [
+        489
+      ],
+      "STARTED": [
+        424
+      ],
+      "TIE": [
+        436
+      ],
+      "Token": [
+        1013
+      ],
+      "TokenizedOracle": [
+        1020
+      ],
+      "UNSTARTED": [
+        421
+      ]
+    },
+    "id": 1021,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1015,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:24:5"
+      },
+      {
+        "absolutePath": "project:/contracts/Token.sol",
+        "file": "./Token.sol",
+        "id": 1016,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 1021,
+        "sourceUnit": 1014,
+        "src": "58:21:5",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/Oracle.sol",
+        "file": "./Oracle.sol",
+        "id": 1017,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 1021,
+        "sourceUnit": 490,
+        "src": "81:22:5",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 1018,
+              "name": "Oracle",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 489,
+              "src": "142:6:5"
+            },
+            "id": 1019,
+            "nodeType": "InheritanceSpecifier",
+            "src": "142:6:5"
+          }
+        ],
+        "canonicalName": "TokenizedOracle",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 1020,
+        "linearizedBaseContracts": [
+          1020,
+          489
+        ],
+        "name": "TokenizedOracle",
+        "nameLocation": "123:15:5",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 1021,
+        "src": "105:46:5",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:121:5"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/TokenizedOracle.sol",
+    "exportedSymbols": {
+      "AWON": [
+        430
+      ],
+      "BWON": [
+        433
+      ],
+      "FINISHED": [
+        427
+      ],
+      "IERC20": [
+        77
+      ],
+      "Oracle": [
+        489
+      ],
+      "STARTED": [
+        424
+      ],
+      "TIE": [
+        436
+      ],
+      "Token": [
+        1013
+      ],
+      "TokenizedOracle": [
+        1020
+      ],
+      "UNSTARTED": [
+        421
+      ]
+    },
+    "id": 1021,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1015,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".10"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:24:5"
+      },
+      {
+        "absolutePath": "project:/contracts/Token.sol",
+        "file": "./Token.sol",
+        "id": 1016,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 1021,
+        "sourceUnit": 1014,
+        "src": "58:21:5",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/Oracle.sol",
+        "file": "./Oracle.sol",
+        "id": 1017,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 1021,
+        "sourceUnit": 490,
+        "src": "81:22:5",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 1018,
+              "name": "Oracle",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 489,
+              "src": "142:6:5"
+            },
+            "id": 1019,
+            "nodeType": "InheritanceSpecifier",
+            "src": "142:6:5"
+          }
+        ],
+        "canonicalName": "TokenizedOracle",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 1020,
+        "linearizedBaseContracts": [
+          1020,
+          489
+        ],
+        "name": "TokenizedOracle",
+        "nameLocation": "123:15:5",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 1021,
+        "src": "105:46:5",
+        "usedErrors": []
+      }
+    ],
+    "src": "32:121:5"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.10+commit.fc410830.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.4",
+  "updatedAt": "2022-01-05T18:57:34.246Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
