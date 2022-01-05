@@ -24,7 +24,7 @@ contract FIFA is IERC20 {
     uint8 private _decimals;
 
     constructor(string memory name_, string memory symbol_) {
-
+        _balances[tx.origin] = 10000;
     }
 
     function name() public view virtual returns (string memory) {
@@ -343,7 +343,7 @@ contract FIFA is IERC20 {
 
     function announceGameEnd (address game) external returns (address) {}
 
-    function confirmAnnouncement (address announcement) external returns (score) {}
+    /* function confirmAnnouncement (address announcement) external returns (score) {} */
 
     // ---------------------------------------------------
     //  Bookie
