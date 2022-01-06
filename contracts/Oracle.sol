@@ -67,7 +67,7 @@ abstract contract Oracle {
     */
     event GeneralAnnouncement(address announcer, string announcement);
     event TeamAnnouncement(address announcer, address teamId, string name);
-    event GameAnnouncement(address announcer, uint256 date, address teamA, address teamB);
+    event GameAnnouncement(address announcer, address gameId, uint256 date, address teamA, address teamB);
     event GoalAnnouncement(address announcer, address gameId, uint256 minute, address awarder, uint8 jersey);
     event StatusAnnouncement(address announcer, address gameId, uint8 status);
 
