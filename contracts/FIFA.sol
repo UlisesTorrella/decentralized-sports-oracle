@@ -7,22 +7,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract FIFA is IERC20, Oracle {
 
-    // mapping(address => uint256) private _balances;
-    // mapping(address => mapping (address=>uint256)) private _allowances;
-
-    // uint256 private _totalSupply;
-
-    // string private _name;
-    // string private _symbol;
-
-    // uint8 private _decimals;
-
-    // Anouncement logic
-
-    function doNothing() external pure returns (bool) {
-        return false;
-    }
-
     mapping(address => uint256) private _balances;
     mapping(address => mapping (address=>uint256)) private _allowances;
 
@@ -33,10 +17,11 @@ contract FIFA is IERC20, Oracle {
 
     uint8 private _decimals;
 
-    constructor(string memory name_, string memory symbol_) {
+    constructor(string memory name_, string memory symbol_, address stakeContract_) {
         _name = name_;
         _symbol = symbol_;
         _balances[tx.origin] = 10000;
+        _stakeContract = stakeContract_;
     }
 
     function name() public view returns (string memory) {
@@ -310,5 +295,13 @@ contract FIFA is IERC20, Oracle {
         uint256 amount
     ) internal virtual {}
 
+    /*
+        Oracle implementation
+    */
+
+    function announce(string calldata data) override virtual external {
+        require(isStaking(msg.sender), "Who are you, I don't know you get the ** out of here");
+        emit GeneralAnnouncement(msg.sender, data);
+    }
 }
 
