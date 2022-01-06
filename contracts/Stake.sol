@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.4.25 <0.8.12;
 
 contract Stake {
@@ -8,7 +8,7 @@ contract Stake {
 
 	event Staking(address indexed staker);
 
-	constructor() public {
+	constructor() {
 		stakers[tx.origin] = 1;
     hodler = payable(tx.origin);
 	}

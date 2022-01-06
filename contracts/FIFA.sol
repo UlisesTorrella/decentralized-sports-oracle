@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 
 import "./Oracle.sol";
@@ -18,7 +18,7 @@ contract FIFA is Token, Oracle {
         emit TeamAnnouncement(msg.sender, teamId, name);
     }
 
-    function getAnnouncedTeamName(address teamId) public returns (string memory teamName) {
+    function getAnnouncedTeamName(address teamId) public view returns (string memory teamName) {
         return _cTeams[teamId];
     }
 
@@ -35,7 +35,7 @@ contract FIFA is Token, Oracle {
         emit GameAnnouncement(msg.sender, gameId, date, teamA, teamB);
     }
 
-    function getAnnouncedGameDate(address gameId) public returns (uint256 gameDate) {
+    function getAnnouncedGameDate(address gameId) public view returns (uint256 gameDate) {
         return _cGames[gameId].date;
     }
 }
