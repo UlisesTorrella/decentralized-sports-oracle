@@ -1,12 +1,6 @@
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-uint constant UNSTARTED = 0;
-uint constant STARTED = 1;
-uint constant FINISHED = 2;
-uint constant AWON = 1;
-uint constant BWON = 2;
-uint constant TIE = 3;
+import './Constants.sol';
 
 abstract contract Oracle {
 
@@ -38,6 +32,13 @@ abstract contract Oracle {
         uint8 scoreB;
     }
 
+
+    struct Announcement {
+        address txhash;
+        uint32 positiveVotes;
+        uint32 negativeVotes;
+    }
+
     mapping(address => Game) private _games;
     mapping(address => Game) private _cGames;
 
@@ -47,5 +48,35 @@ abstract contract Oracle {
         return _games[id];
     }
 
-    function announce() virtual external {}
+    event GeneralAnnouncement(address announcer, string announcement);
+    event TeamAnnouncement(address announcer, address teamId, string name);
+    event GameAnnouncement(address announcer, uint256 date, address teamA, address teamB);
+    event GoalAnnouncement(address announcer, address gameId, uint256 minute, address awarder, uint8 jersey);
+    event StatusAnnouncement(address announcer, address gameId, uint8 status);
+
+    event AnnouncementSolidified(address txhash);
+    event AnnouncementDisproved(address txhash);
+
+    /*
+        Announcements can be:
+            New team has joined
+            A game is scheduled
+            A game starts
+            A team scores a goal 
+                potential announcements:
+                    Player change
+                    Penalization
+                    Any string
+            A game ends
+    */
+    function announce(string calldata) virtual external {}
+    function announceTeam(address teamId, string calldata name) virtual external {}
+    function announceGame(address gameId, uint256 date, address teamA, address teamB) virtual external {}
+    function announceGoal(address gameId, uint256 minute, address awarder, uint8 jersey) virtual external {}
+    function announceGameStatus(address gameId, uint8 status) virtual external {}
+
+    function approveAnnouncement() virtual external {}
+    function disproveAnnouncement() virtual external {}
+
+
 }

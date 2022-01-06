@@ -30,7 +30,8 @@
         }
       ],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [
@@ -49,7 +50,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"staker\",\"type\":\"address\"}],\"name\":\"Staking\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"isStaking\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"stake\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Stake.sol\":\"Stake\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Stake.sol\":{\"keccak256\":\"0xa9200109facd52670d002ee160778b8ebb0f41dc3eb1fdc02e59d59cfd6be4e5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8a47486cba7485b5933cec25c01f5276720f798840c29a06f8a48dbbf9ac7570\",\"dweb:/ipfs/QmWCgUUCGBQQvXj34mxcHbcZSiy8pFMBopB2Bz9BhocNai\"]}},\"version\":1}",
@@ -3732,10 +3734,17 @@
       "links": {},
       "address": "0xaaD6d70380a3b9E57B34E51c6Faed381d4ee8575",
       "transactionHash": "0x29c7b8c2c72d3db1a71eef49bad936af816dabe7c9fe9941ee0d74d19f6ee57a"
+    },
+    "1641437936249": {
+      "events": {},
+      "links": {},
+      "address": "0x93E6Bf9EC93bdffC4cCb9a0E3280860Ee8b21D96",
+      "transactionHash": "0xd2d638e4f1f2f3242106744f423650ea1ed26885845051dc9919663a7f207693"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-01-05T18:52:23.163Z",
+  "updatedAt": "2022-01-06T03:04:54.771Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

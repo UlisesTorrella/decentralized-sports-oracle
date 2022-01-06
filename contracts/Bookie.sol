@@ -2,7 +2,8 @@
 pragma solidity ^0.8.10;
 
 import './Oracle.sol';
-import './Token.sol';
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import './Constants.sol';
 
 contract Bookie {
 
@@ -31,11 +32,11 @@ contract Bookie {
     Pot storage pot = _pots[gameId];
     uint256 totalFunds = pot.sumForA + pot.sumForB;
 
-    if (game.result == AWON) {
+    if (game.result == Constants.AWON) {
       uint256 betted = pot.betsForA[player];
       earned = totalFunds * (betted / pot.sumForA);
     }
-    else if (game.result == BWON) {
+    else if (game.result == Constants.BWON) {
       uint256 betted = pot.betsForB[player];
       earned = totalFunds * (betted / pot.sumForB);
     }
@@ -46,10 +47,10 @@ contract Bookie {
   function placeBet(address c, address gameId, address winner, uint256 amount) external returns (address) {
     // check for game existence and non-started status
     Oracle oracle = Oracle(c);
-    Token token = Token(c);
+    IERC20 token = IERC20(c);
     Oracle.Game memory game = oracle.getGame(gameId);
     require(game.a == winner || game.b == winner, "You are betting on a team thats not in this game");
-    require(game.status != UNSTARTED, "This game is no longer taking bets");
+    require(game.status != Constants.UNSTARTED, "This game is no longer taking bets");
     uint256 balance = token.balanceOf(msg.sender); 
     require (balance > amount, "Insuficient funds");
     
@@ -66,11 +67,11 @@ contract Bookie {
   function cashBet(address c, address gameId) external returns (uint256 newBalance) {
     require(_pots[gameId].betsForA[msg.sender] > 0 || _pots[gameId].betsForB[msg.sender] > 0, "You have no bets in this pot");
     Oracle.Game memory game = Oracle(c).getGame(gameId);
-    require(game.status != FINISHED, "The game hasn't finished yet");
+    require(game.status != Constants.FINISHED, "The game hasn't finished yet");
 
-    Token(c).transfer(address(this), calculateReturn(game, gameId, msg.sender));
+    IERC20(c).transfer(address(this), calculateReturn(game, gameId, msg.sender));
 
-    return Token(c).balanceOf(msg.sender);
+    return IERC20(c).balanceOf(msg.sender);
   }
 
 }
