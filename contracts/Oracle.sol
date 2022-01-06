@@ -8,23 +8,23 @@ abstract contract Oracle {
   //  Oracle
   // ---------------------------------------------------
 
-    mapping(address => string) private _teams;
-    mapping(address => string) private _cTeams; // c reads candidate
+    mapping(address => string) internal _teams;
+    mapping(address => string) internal _cTeams; // c reads candidate
 
     struct Game {
         uint256 date;
         address a;
         address b;
-        uint8 status; 
-        /* 
-            0 -> not started  
-            1 -> playing  
+        uint8 status;
+        /*
+            0 -> not started
+            1 -> playing
             2 -> finished
         */
         uint8 result;
         /*
-            0 -> not yet 
-            1 -> A won 
+            0 -> not yet
+            1 -> A won
             2 -> B won
             3 -> tie
         */
@@ -39,8 +39,8 @@ abstract contract Oracle {
         uint32 negativeVotes;
     }
 
-    mapping(address => Game) private _games;
-    mapping(address => Game) private _cGames;
+    mapping(address => Game) internal _games;
+    mapping(address => Game) internal _cGames;
 
     uint256 totalStakers;
 
@@ -50,7 +50,7 @@ abstract contract Oracle {
 
     event GeneralAnnouncement(address announcer, string announcement);
     event TeamAnnouncement(address announcer, address teamId, string name);
-    event GameAnnouncement(address announcer, uint256 date, address teamA, address teamB);
+    event GameAnnouncement(address announcer, address gameId, uint256 date, address teamA, address teamB);
     event GoalAnnouncement(address announcer, address gameId, uint256 minute, address awarder, uint8 jersey);
     event StatusAnnouncement(address announcer, address gameId, uint8 status);
 
@@ -62,7 +62,7 @@ abstract contract Oracle {
             New team has joined
             A game is scheduled
             A game starts
-            A team scores a goal 
+            A team scores a goal
                 potential announcements:
                     Player change
                     Penalization
@@ -77,6 +77,4 @@ abstract contract Oracle {
 
     function approveAnnouncement() virtual external {}
     function disproveAnnouncement() virtual external {}
-
-
 }
