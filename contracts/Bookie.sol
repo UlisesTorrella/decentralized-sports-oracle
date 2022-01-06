@@ -1,8 +1,8 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 
 import './Oracle.sol';
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./Token.sol";
 import './Constants.sol';
 
 contract Bookie {
@@ -47,13 +47,13 @@ contract Bookie {
   function placeBet(address c, address gameId, address winner, uint256 amount) external returns (address) {
     // check for game existence and non-started status
     Oracle oracle = Oracle(c);
-    IERC20 token = IERC20(c);
+    Token token = Token(c);
     Oracle.Game memory game = oracle.getGame(gameId);
     require(game.a == winner || game.b == winner, "You are betting on a team thats not in this game");
     require(game.status != Constants.UNSTARTED, "This game is no longer taking bets");
-    uint256 balance = token.balanceOf(msg.sender); 
+    uint256 balance = token.balanceOf(msg.sender);
     require (balance > amount, "Insuficient funds");
-    
+
     token.transfer(address(this), amount); // the contract will hold those tokens
 
     bookkeep(game, gameId, msg.sender, winner, amount); // you're in
@@ -69,9 +69,9 @@ contract Bookie {
     Oracle.Game memory game = Oracle(c).getGame(gameId);
     require(game.status != Constants.FINISHED, "The game hasn't finished yet");
 
-    IERC20(c).transfer(address(this), calculateReturn(game, gameId, msg.sender));
+    Token(c).transfer(address(this), calculateReturn(game, gameId, msg.sender));
 
-    return IERC20(c).balanceOf(msg.sender);
+    return Token(c).balanceOf(msg.sender);
   }
 
 }
