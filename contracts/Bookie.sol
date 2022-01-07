@@ -16,6 +16,7 @@ contract Bookie {
 
   mapping(address => Pot) _pots; // game -> bet relation
 
+  event Bet(address who, address game, address win, uint256 amount);
 
   function bookkeep(Oracle.Game memory game, address gameId, address player, address winner, uint256 amount) internal {
     if(game.a == winner) {
@@ -50,7 +51,7 @@ contract Bookie {
     Token token = Token(c);
     Oracle.Game memory game = oracle.getGame(gameId);
     require(game.a == winner || game.b == winner, "You are betting on a team thats not in this game");
-    require(game.status != Constants.UNSTARTED, "This game is no longer taking bets");
+    require(game.status == Constants.UNSTARTED, "This game is no longer taking bets");
     uint256 balance = token.balanceOf(msg.sender);
     require (balance > amount, "Insuficient funds");
 
@@ -58,6 +59,7 @@ contract Bookie {
 
     bookkeep(game, gameId, msg.sender, winner, amount); // you're in
 
+    emit Bet(msg.sender, gameId, winner, amount);
     return gameId;
   }
 
