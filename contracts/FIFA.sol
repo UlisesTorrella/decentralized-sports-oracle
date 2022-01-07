@@ -13,10 +13,13 @@ contract FIFA is Token, Oracle {
         _stakeContract = stakeContract_;
     }
 
-    function announceTeam(address teamId, string calldata name) override public {
+    function announceTeam(address teamId, string calldata name) override public returns (uint256 announcementId) {
         _cTeams[teamId] = name;
 
         emit TeamAnnouncement(msg.sender, teamId, name);
+        announcementId = createAnnouncement();
+
+        return announcementId;
     }
 
     function getAnnouncedTeamName(address teamId) public view returns (string memory teamName) {
@@ -38,5 +41,15 @@ contract FIFA is Token, Oracle {
 
     function getAnnouncedGameDate(address gameId) public view returns (uint256 gameDate) {
         return _cGames[gameId].date;
+    }
+
+    function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) override public returns (bool wasSolidified) {
+        wasSolidified = approveAnnouncement(announcementId);
+
+        if (wasSolidified) {
+            _teams[teamId] = teamName;
+        }
+
+        return wasSolidified;
     }
 }
