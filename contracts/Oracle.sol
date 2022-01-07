@@ -86,8 +86,30 @@ abstract contract Oracle {
     event AnnouncementDisproved(uint256 announcementId);
 
     function announce(string calldata data) virtual external {}
-    function announceTeam(address teamId, string calldata name) virtual external returns (uint256 announcementId) {}
-    function announceGame(address gameId, uint256 date, address teamA, address teamB) virtual external {}
+
+    function announceTeam(address teamId, string calldata name) virtual public returns (uint256 announcementId) {
+        _cTeams[teamId] = name;
+
+        emit TeamAnnouncement(msg.sender, teamId, name);
+        announcementId = createAnnouncement();
+
+        return announcementId;
+    }
+
+    function announceGame(address gameId, uint256 date, address teamA, address teamB) virtual public {
+        // needs to check if teamA and teamB has been announced.
+
+        Game memory game = Game({date: date, a: teamA, b: teamB,
+                                status: Constants.UNSTARTED,
+                                result: Constants.NOTRESULTYET,
+                                scoreA: Constants.NOTRESULTYET,
+                                scoreB: Constants.NOTRESULTYET});
+        _cGames[gameId] = game;
+
+        emit GameAnnouncement(msg.sender, gameId, date, teamA, teamB);
+    }
+
+
     function announceGoal(address gameId, uint256 minute, address awarder, uint8 jersey) virtual external {}
     function announceGameStatus(address gameId, uint8 status) virtual external {}
 
@@ -95,7 +117,16 @@ abstract contract Oracle {
         Each type of announcement approval needs its approval function but only
         one function (disproveAnnouncement) is necessary for disproval.
     */
-    function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) virtual external returns (bool wasSolidified) {}
+    function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) virtual public returns (bool wasSolidified) {
+        wasSolidified = approveAnnouncement(announcementId);
+
+        if (wasSolidified) {
+            _teams[teamId] = teamName;
+        }
+
+        return wasSolidified;
+    }
+    
     function approveGameAnnouncement(uint256 announcementId) virtual external {}
     function approveGoalAnnouncement(uint256 announcementId) virtual external {}
     function approveGameStatusAnnouncement(uint256 announcementId) virtual external {}

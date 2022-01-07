@@ -13,35 +13,5 @@ contract FIFA is Token, Oracle {
         _stakeContract = stakeContract_;
     }
 
-    function announceTeam(address teamId, string calldata name) override public returns (uint256 announcementId) {
-        _cTeams[teamId] = name;
 
-        emit TeamAnnouncement(msg.sender, teamId, name);
-        announcementId = createAnnouncement();
-
-        return announcementId;
-    }
-
-    function announceGame(address gameId, uint256 date, address teamA, address teamB) override public {
-        // needs to check if teamA and teamB has been announced.
-
-        Game memory game = Game({date: date, a: teamA, b: teamB,
-                                status: Constants.UNSTARTED,
-                                result: Constants.NOTRESULTYET,
-                                scoreA: Constants.NOTRESULTYET,
-                                scoreB: Constants.NOTRESULTYET});
-        _cGames[gameId] = game;
-
-        emit GameAnnouncement(msg.sender, gameId, date, teamA, teamB);
-    }
-
-    function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) override public returns (bool wasSolidified) {
-        wasSolidified = approveAnnouncement(announcementId);
-
-        if (wasSolidified) {
-            _teams[teamId] = teamName;
-        }
-
-        return wasSolidified;
-    }
 }
