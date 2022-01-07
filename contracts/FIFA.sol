@@ -30,10 +30,10 @@ contract FIFA is Token, Oracle {
         // needs to check if teamA and teamB has been announced.
 
         Game memory game = Game({date: date, a: teamA, b: teamB,
-                                  status: Constants.UNSTARTED,
-                                  result: Constants.NOTRESULTYET,
-                                  scoreA: Constants.NOTRESULTYET,
-                                  scoreB: Constants.NOTRESULTYET});
+                                status: Constants.UNSTARTED,
+                                result: Constants.NOTRESULTYET,
+                                scoreA: Constants.NOTRESULTYET,
+                                scoreB: Constants.NOTRESULTYET});
         _cGames[gameId] = game;
 
         emit GameAnnouncement(msg.sender, gameId, date, teamA, teamB);

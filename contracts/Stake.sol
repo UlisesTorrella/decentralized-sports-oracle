@@ -13,12 +13,11 @@ contract Stake {
     hodler = payable(tx.origin);
 	}
 
-  function stake() external payable returns(bool){
-    (bool success,) = hodler.call{value: 1 ether}("I'm staking to be a reporter"); // cost to enter is 1 MATIC
-    require(success, "Failed to send money, check your funds");
+  function stake() external payable {
+    // (bool success,) = hodler.call{value: 1 ether}("I'm staking to be a reporter"); // cost to enter is 1 MATIC
+    // require(success, "Failed to send money, check your funds");
     stakers[msg.sender] = 1;
     emit Staking(msg.sender);
-    return true;
   }
 
 	function isStaking(address addr) external view returns(bool){

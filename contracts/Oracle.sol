@@ -42,7 +42,7 @@ abstract contract Oracle {
     /*
         Staking
     */
-    uint256 totalStakers;
+    uint256 totalStakers = 5; // hardcoded remember to change
     address _stakeContract;
 
     function isStaking(address user) internal view returns (bool) {
