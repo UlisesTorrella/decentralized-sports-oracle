@@ -1,18 +1,26 @@
 const FIFA = artifacts.require("FIFA");
+const Stake = artifacts.require("Stake");
 
 contract('FIFA', (accounts) => {
   it('should solidify a team announcement', async () => {
     const FIFAInstance = await FIFA.deployed();
+    const StakeInstance = await Stake.deployed();
 
-    const teamId = accounts[1];
+    const teamId = accounts[0];
     const teamName = "Spain";
     const announcementId = 0;
 
-    // stake account 1
-    // stake account 2
-    // stake account 3
-    // stake account 4
-    // stake account 5
+    // stake accounts
+    const accountOne = accounts[1];
+    await StakeInstance.stake({ from: accountOne, value: 1e18 });
+    const accountTwo = accounts[2];
+    await StakeInstance.stake({ from: accountTwo, value: 1e18 });
+    const accountThree = accounts[3];
+    await StakeInstance.stake({ from: accountThree, value: 1e18 });
+    const accountFour = accounts[4];
+    await StakeInstance.stake({ from: accountFour, value: 1e18 });
+    const accountFive = accounts[5];
+    await StakeInstance.stake({ from: accountFive, value: 1e18 });
 
     await FIFAInstance.announceTeam(teamId, teamName);
 

@@ -42,12 +42,16 @@ abstract contract Oracle {
     /*
         Staking
     */
-    uint256 totalStakers = 5; // hardcoded remember to change
     address _stakeContract;
 
     function isStaking(address user) internal view returns (bool) {
         Stake stake = Stake(_stakeContract);
         return stake.isStaking(user);
+    }
+
+    function getTotalStakers() public view returns (uint256 stakersNumber) {
+        Stake stake = Stake(_stakeContract);
+        return stake.getStakersNumber();
     }
     /*
         Announcements can be:
@@ -106,6 +110,7 @@ abstract contract Oracle {
         wasSolidified = false;
         Announcement storage a = _announcements[announcementId];
         a.positiveVotes += 1;
+        uint256 totalStakers = getTotalStakers();
 
         if (a.positiveVotes > totalStakers/2) { // cuidado que es division entera
             // solidify announcement
@@ -121,6 +126,7 @@ abstract contract Oracle {
         Announcement storage a = _announcements[announcementId];
         wasDisproved = false;
         a.negativeVotes += 1;
+        uint256 totalStakers = getTotalStakers();
 
         if (a.negativeVotes > totalStakers/2) { // cuidado que es division entera
             // solidify announcement
