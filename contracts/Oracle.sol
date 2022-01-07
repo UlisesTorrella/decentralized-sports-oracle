@@ -91,7 +91,11 @@ abstract contract Oracle {
     function announceGoal(address gameId, uint256 minute, address awarder, uint8 jersey) virtual external {}
     function announceGameStatus(address gameId, uint8 status) virtual external {}
 
-    function approveTeamAnnouncement(uint256 announcementId,  address teamId, string calldata teamName) virtual external returns (bool wasSolidified) {}
+    /*
+        Each type of announcement approval needs its approval function but only
+        one function (disproveAnnouncement) is necessary for disproval.
+    */
+    function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) virtual external returns (bool wasSolidified) {}
     function approveGameAnnouncement(uint256 announcementId) virtual external {}
     function approveGoalAnnouncement(uint256 announcementId) virtual external {}
     function approveGameStatusAnnouncement(uint256 announcementId) virtual external {}
@@ -106,13 +110,21 @@ abstract contract Oracle {
         return a.announcementId;
     }
 
+    function getAnnouncedTeamName(address teamId) public view returns (string memory teamName) {
+        return _cTeams[teamId];
+    }
+
+    function getAnnouncedGameDate(address gameId) public view returns (uint256 gameDate) {
+        return _cGames[gameId].date;
+    }
+
     function approveAnnouncement(uint256 announcementId) internal returns (bool wasSolidified) {
         wasSolidified = false;
         Announcement storage a = _announcements[announcementId];
         a.positiveVotes += 1;
         uint256 totalStakers = getTotalStakers();
 
-        if (a.positiveVotes > totalStakers/2) { // cuidado que es division entera
+        if (a.positiveVotes > totalStakers/2 && a.state == AnnouncementState.NotEnoughVotes) { // cuidado que es division entera
             // solidify announcement
             emit AnnouncementSolidified(announcementId); // , announcementType);
             a.state = AnnouncementState.Solidified;
@@ -122,14 +134,14 @@ abstract contract Oracle {
         return wasSolidified;
     }
 
-    function disproveAnnouncement(uint256 announcementId) internal returns (bool wasDisproved) {
+    function disproveAnnouncement(uint256 announcementId) public returns (bool wasDisproved) {
         Announcement storage a = _announcements[announcementId];
         wasDisproved = false;
         a.negativeVotes += 1;
         uint256 totalStakers = getTotalStakers();
 
-        if (a.negativeVotes > totalStakers/2) { // cuidado que es division entera
-            // solidify announcement
+        if (a.negativeVotes > totalStakers/2 && a.state == AnnouncementState.NotEnoughVotes) { // cuidado que es division entera
+            // disprove announcement
             emit AnnouncementDisproved(announcementId); // , announcementType);
             a.state = AnnouncementState.Disproven;
             wasDisproved = true;
@@ -144,5 +156,9 @@ abstract contract Oracle {
 
     function getAnnouncementPosVotes(uint256 announcementId) public view returns (uint32 posVotes) {
         return _announcements[announcementId].positiveVotes;
+    }
+
+    function getAnnouncementNegVotes(uint256 announcementId) public view returns (uint32 negVotes) {
+        return _announcements[announcementId].negativeVotes;
     }
 }
