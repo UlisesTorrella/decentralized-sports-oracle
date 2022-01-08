@@ -2,19 +2,21 @@ const FIFA = artifacts.require("FIFA");
 const Stake = artifacts.require("Stake");
 const Bookie = artifacts.require("Bookie");
 
+const stakerFactory = require('./factories/stakerFactory');
+
 contract('Bookie', (accounts) => {
   it('should place a bet', async () => {
     const FIFAInstance = await FIFA.deployed();
     const StakeInstance = await Stake.deployed();
     const BookieInstance = await Bookie.deployed();
     
-    const accountOne = accounts[0];
-    const balance = await web3.eth.getBalance(accountOne);
-    console.log(balance);
-    await StakeInstance.stake({ from: accountOne, value: 1e18 + 500000 });
-    isOneStaking = await StakeInstance.isStaking.call(accountOne);
+    await stakerFactory(StakeInstance, accounts[0], accounts[1], accounts[2], accounts[3]);
 
-    assert.equal(isOneStaking, true, "Account One should be staking after stake.");
+    isOneStaking = await StakeInstance.isStaking.call(accounts[0]);
+    isTwoStaking = await StakeInstance.isStaking.call(accounts[1]);
+    isThreeStaking = await StakeInstance.isStaking.call(accounts[2]);
+    isFourStaking = await StakeInstance.isStaking.call(accounts[3]);
+    assert(isOneStaking && isTwoStaking && isThreeStaking && isFourStaking, "The stakers coulnd't be set");
 
 
     const spain = await web3.eth.accounts.create("España");
@@ -26,7 +28,9 @@ contract('Bookie', (accounts) => {
     // console.log(events);
 
     const argspain = await web3.eth.accounts.create("Argentina-España");
-    await FIFAInstance.announceGame(argspain.address, Date.now(), spain.address, arg.address);    
+    await FIFAInstance.announceGame(argspain.address, Date.now(), spain.address, arg.address);
+    
+    
     // fetch games
     
     // chose one
