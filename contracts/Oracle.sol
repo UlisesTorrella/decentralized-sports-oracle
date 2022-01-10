@@ -157,6 +157,10 @@ abstract contract Oracle {
         one function (disproveAnnouncement) is necessary for disproval.
     */
     function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) virtual public returns (bool wasSolidified) {
+        // Needs to check if this user has not approved this announcement before.
+        // Needs to check that input data matches _cTeams data.
+        // Needs to check if announcementId is a TeamAnnouncement.
+        // Needs to check if teamId is valid.
         wasSolidified = approveAnnouncement(announcementId);
 
         if (wasSolidified) {
@@ -166,9 +170,55 @@ abstract contract Oracle {
         return wasSolidified;
     }
 
-    function approveGameAnnouncement(uint256 announcementId) virtual external {}
-    function approveGoalAnnouncement(uint256 announcementId) virtual external {}
-    function approveGameStatusAnnouncement(uint256 announcementId) virtual external {}
+    function approveGameAnnouncement(uint256 announcementId, address gameId) virtual public returns (bool wasSolidified) {
+        // Needs to check if this user has not approved this announcement before.
+        // Needs to check if announcementId is a GameAnnouncement.
+        // Needs to check if gameId is valid.
+        wasSolidified = approveAnnouncement(announcementId);
+
+        if (wasSolidified) {
+            _games[gameId] = _cGames[gameId];
+        }
+
+        return wasSolidified;
+    }
+
+    function approveGoalAnnouncement(uint256 announcementId) virtual public returns (bool wasSolidified) {
+        // Needs to check if this user has not approved this announcement before.
+        // Needs to check if announcementId is a GoalAnnouncement.
+        wasSolidified = approveAnnouncement(announcementId);
+
+        if (wasSolidified) {
+            _goals[announcementId] = _cGoals[announcementId];
+        }
+
+        return wasSolidified;
+    }
+
+    function approveGameStatusAnnouncement(uint256 announcementId, address gameId, uint8 newGameStatus) virtual public returns (bool wasSolidified) {
+        // Needs to check if this user has not approved this announcement before.
+        // Needs to check if announcementId is a StatusAnnouncement.
+        // Needs to check if gameId is a valid game.
+        wasSolidified = approveAnnouncement(announcementId);
+
+        if (wasSolidified) {
+            _games[gameId].status = newGameStatus;
+
+            if (newGameStatus == 2) { // game has finished
+                uint8 scoreTeamA = _games[gameId].scoreA;
+                uint8 scoreTeamB = _games[gameId].scoreB;
+                if (scoreTeamA > scoreTeamB) {
+                    _games[gameId].result = 1; // A won
+                } else if (scoreTeamA == scoreTeamB) {
+                    _games[gameId].result = 3; // tie
+                } else if (scoreTeamA < scoreTeamB) {
+                    _games[gameId].result = 2; // B won
+                }
+            }
+        }
+
+        return wasSolidified;
+    }
 
     function createAnnouncement() internal returns (uint256 announcementId) {
         Announcement memory a = Announcement({announcementId: _announcementsQuantity,
@@ -189,6 +239,7 @@ abstract contract Oracle {
     }
 
     function approveAnnouncement(uint256 announcementId) internal returns (bool wasSolidified) {
+        // Needs to check if this user has not approved this announcement before.
         wasSolidified = false;
         Announcement storage a = _announcements[announcementId];
         a.positiveVotes += 1;
