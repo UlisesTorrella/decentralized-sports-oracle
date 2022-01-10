@@ -33,8 +33,24 @@ abstract contract Oracle {
         uint8 scoreB;
     }
 
+    struct Goal {
+        uint256 minute;
+        address teamAwarder;
+        uint8 jersey;
+    }
+
+    struct GameStatus {
+        address gameId;
+        uint8 status;
+    }
+
     mapping(address => Game) internal _games;
     mapping(address => Game) internal _cGames;
+
+    mapping(uint256 => Goal) internal _goals; // announcementId -> Goal mapping
+    mapping(uint256 => Goal) internal _cGoals; // announcementId -> Goal mapping
+
+    mapping(uint256 => GameStatus) internal _cGameStatus; // announcementId -> status mapping
 
     function getGame(address id) external view returns (Game memory) {
         return _games[id];
@@ -96,7 +112,7 @@ abstract contract Oracle {
         return announcementId;
     }
 
-    function announceGame(address gameId, uint256 date, address teamA, address teamB) virtual public {
+    function announceGame(address gameId, uint256 date, address teamA, address teamB) virtual public returns (uint256 announcementId){
         // needs to check if teamA and teamB has been announced.
 
         Game memory game = Game({date: date, a: teamA, b: teamB,
@@ -106,12 +122,35 @@ abstract contract Oracle {
                                 scoreB: Constants.NOTRESULTYET});
         _cGames[gameId] = game;
 
+        announcementId = createAnnouncement();
         emit GameAnnouncement(msg.sender, gameId, date, teamA, teamB);
+
+        return announcementId;
     }
 
+    function announceGoal(address gameId, uint256 minute, address teamAwarder, uint8 jersey) virtual external returns (uint256 announcementId){
+        // Needs to check if game and team playing is valid
 
-    function announceGoal(address gameId, uint256 minute, address awarder, uint8 jersey) virtual external {}
-    function announceGameStatus(address gameId, uint8 status) virtual external {}
+        announcementId = createAnnouncement();
+
+        Goal memory goal = Goal({minute: minute, teamAwarder: teamAwarder, jersey: jersey});
+        _cGoals[announcementId] = goal;
+
+        emit GoalAnnouncement(msg.sender, gameId, minute, teamAwarder, jersey);
+
+        return announcementId;
+    }
+
+    function announceGameStatus(address gameId, uint8 status) virtual external returns (uint256 announcementId) {
+        announcementId = createAnnouncement();
+
+        GameStatus memory gameStatus = GameStatus({gameId: gameId, status: status});
+        _cGameStatus[announcementId] = gameStatus;
+
+        emit StatusAnnouncement(msg.sender, gameId, status);
+
+        return announcementId;
+    }
 
     /*
         Each type of announcement approval needs its approval function but only
@@ -126,7 +165,7 @@ abstract contract Oracle {
 
         return wasSolidified;
     }
-    
+
     function approveGameAnnouncement(uint256 announcementId) virtual external {}
     function approveGoalAnnouncement(uint256 announcementId) virtual external {}
     function approveGameStatusAnnouncement(uint256 announcementId) virtual external {}
