@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import './Constants.sol';
-import './Stake.sol';
+import "./staking.sol";
 
 abstract contract Oracle {
 
@@ -58,17 +58,34 @@ abstract contract Oracle {
     /*
         Staking
     */
-    address _stakeContract;
+	Staking _staking;
 
-    function isStaking(address user) internal view returns (bool) {
-        Stake stake = Stake(_stakeContract);
-        return stake.isStaking(user);
+    function setStakingContract(address payable stakingContract) internal {
+        _staking = Staking(stakingContract);
     }
 
-    function getTotalStakers() public view returns (uint256 stakersNumber) {
-        Stake stake = Stake(_stakeContract);
-        return stake.getStakersNumber();
-    }
+	receive() external payable {}
+
+	function transfer(uint256 amount) public {
+        payable(_staking).transfer(amount);
+	}
+
+	function stake(uint256 amount) public {
+        _staking.stake{value: amount}();
+	}
+
+	function unstake() public {
+        _staking.unstake();
+	}
+
+	function isStaking(address addr) public view returns (bool) {
+		return _staking.addressToIsValidator(addr);
+	}
+
+
+	function getTotalStakers() public view returns (uint256) {
+		return _staking.validators().length;
+	}
     /*
         Announcements can be:
             New team has joined

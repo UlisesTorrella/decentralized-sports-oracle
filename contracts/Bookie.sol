@@ -47,7 +47,7 @@ contract Bookie {
   */
   function placeBet(address c, address gameId, address winner, uint256 amount) external returns (address) {
     // check for game existence and non-started status
-    Oracle oracle = Oracle(c);
+    Oracle oracle = Oracle(payable(c));
     Token token = Token(c);
     Oracle.Game memory game = oracle.getGame(gameId);
     require(game.a == winner || game.b == winner, "You are betting on a team thats not in this game");
@@ -68,7 +68,7 @@ contract Bookie {
   */
   function cashBet(address c, address gameId) external returns (uint256 newBalance) {
     require(_pots[gameId].betsForA[msg.sender] > 0 || _pots[gameId].betsForB[msg.sender] > 0, "You have no bets in this pot");
-    Oracle.Game memory game = Oracle(c).getGame(gameId);
+    Oracle.Game memory game = Oracle(payable(c)).getGame(gameId);
     require(game.status != Constants.FINISHED, "The game hasn't finished yet");
 
     Token(c).transfer(address(this), calculateReturn(game, gameId, msg.sender));
