@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import './Constants.sol';
-import "./staking.sol";
+import "./Staking.sol";
 
 abstract contract Oracle {
 
@@ -55,9 +55,21 @@ abstract contract Oracle {
     function getGame(address id) external view returns (Game memory) {
         return _games[id];
     }
-    /*
-        Staking
-    */
+
+    // Modifiers
+
+    modifier yetToVote(uint256 announcement) {
+        require(
+            !_announcements[announcement].positiveVoters[msg.sender] &&
+            !_announcements[announcement].negativeVoters[msg.sender]
+            ,
+            "You've already voted"
+        );
+        _;
+    }
+
+
+    // Staking
 	Staking _staking;
 
     function setStakingContract(address payable stakingContract) internal {
@@ -103,12 +115,14 @@ abstract contract Oracle {
 
     struct Announcement {
         uint256 announcementId;
+        mapping(address => bool) positiveVoters;
+        mapping(address => bool) negativeVoters;
         uint32 positiveVotes;
         uint32 negativeVotes;
         AnnouncementState state;
     }
 
-    uint256 private _announcementsQuantity = 0; // no me gusta para nada esto
+    uint256 private _announcementsQuantity = 0; // no me gusta para nada esto ... constructor?
     event GeneralAnnouncement(address announcer, string announcement);
     event TeamAnnouncement(address announcer, address teamId, string name);
     event GameAnnouncement(address announcer, address gameId, uint256 date, address teamA, address teamB);
@@ -173,7 +187,7 @@ abstract contract Oracle {
         Each type of announcement approval needs its approval function but only
         one function (disproveAnnouncement) is necessary for disproval.
     */
-    function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) virtual public returns (bool wasSolidified) {
+    function approveTeamAnnouncement(uint256 announcementId, address teamId, string calldata teamName) virtual public yetToVote(announcementId) returns (bool wasSolidified) {
         // Needs to check if this user has not approved this announcement before.
         // Needs to check that input data matches _cTeams data.
         // Needs to check if announcementId is a TeamAnnouncement.
@@ -187,7 +201,7 @@ abstract contract Oracle {
         return wasSolidified;
     }
 
-    function approveGameAnnouncement(uint256 announcementId, address gameId) virtual public returns (bool wasSolidified) {
+    function approveGameAnnouncement(uint256 announcementId, address gameId) virtual public yetToVote(announcementId) returns (bool wasSolidified) {
         // Needs to check if this user has not approved this announcement before.
         // Needs to check if announcementId is a GameAnnouncement.
         // Needs to check if gameId is valid.
@@ -200,7 +214,7 @@ abstract contract Oracle {
         return wasSolidified;
     }
 
-    function approveGoalAnnouncement(uint256 announcementId) virtual public returns (bool wasSolidified) {
+    function approveGoalAnnouncement(uint256 announcementId) virtual public yetToVote(announcementId) returns (bool wasSolidified) {
         // Needs to check if this user has not approved this announcement before.
         // Needs to check if announcementId is a GoalAnnouncement.
         wasSolidified = approveAnnouncement(announcementId);
@@ -212,7 +226,7 @@ abstract contract Oracle {
         return wasSolidified;
     }
 
-    function approveGameStatusAnnouncement(uint256 announcementId, address gameId, uint8 newGameStatus) virtual public returns (bool wasSolidified) {
+    function approveGameStatusAnnouncement(uint256 announcementId, address gameId, uint8 newGameStatus) virtual public yetToVote(announcementId) returns (bool wasSolidified) {
         // Needs to check if this user has not approved this announcement before.
         // Needs to check if announcementId is a StatusAnnouncement.
         // Needs to check if gameId is a valid game.
@@ -238,12 +252,12 @@ abstract contract Oracle {
     }
 
     function createAnnouncement() internal returns (uint256 announcementId) {
-        Announcement memory a = Announcement({announcementId: _announcementsQuantity,
-                                        positiveVotes: 0,
-                                        negativeVotes: 0,
-                                        state: AnnouncementState.NotEnoughVotes});
-        _announcementsQuantity += 1; // this should be atomic
-
+        Announcement storage a = _announcements[_announcementsQuantity++];
+        a.announcementId = _announcementsQuantity;
+        a.positiveVotes = 0;
+        a.negativeVotes = 0;
+        a.state = AnnouncementState.NotEnoughVotes;
+        
         return a.announcementId;
     }
 
@@ -255,11 +269,12 @@ abstract contract Oracle {
         return _cGames[gameId].date;
     }
 
-    function approveAnnouncement(uint256 announcementId) internal returns (bool wasSolidified) {
+    function approveAnnouncement(uint256 announcementId) internal yetToVote(announcementId) returns (bool wasSolidified) {
         // Needs to check if this user has not approved this announcement before.
         wasSolidified = false;
         Announcement storage a = _announcements[announcementId];
         a.positiveVotes += 1;
+        a.positiveVoters[msg.sender] = true;
         uint256 totalStakers = getTotalStakers();
 
         if (a.positiveVotes > totalStakers/2 && a.state == AnnouncementState.NotEnoughVotes) { // cuidado que es division entera
@@ -272,10 +287,11 @@ abstract contract Oracle {
         return wasSolidified;
     }
 
-    function disproveAnnouncement(uint256 announcementId) public returns (bool wasDisproved) {
+    function disproveAnnouncement(uint256 announcementId) public yetToVote(announcementId) returns (bool wasDisproved) {
         Announcement storage a = _announcements[announcementId];
         wasDisproved = false;
         a.negativeVotes += 1;
+        a.negativeVoters[msg.sender] = true;
         uint256 totalStakers = getTotalStakers();
 
         if (a.negativeVotes > totalStakers/2 && a.state == AnnouncementState.NotEnoughVotes) { // cuidado que es division entera
