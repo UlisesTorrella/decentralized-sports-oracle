@@ -78,7 +78,7 @@ abstract contract Oracle {
 
 	receive() external payable {}
 
-	function transfer(uint256 amount) public {
+	function transferStaking(uint256 amount) public {
         payable(_staking).transfer(amount);
 	}
 
@@ -257,7 +257,7 @@ abstract contract Oracle {
         a.positiveVotes = 0;
         a.negativeVotes = 0;
         a.state = AnnouncementState.NotEnoughVotes;
-        
+
         return a.announcementId;
     }
 
