@@ -115,6 +115,11 @@ contract Token is IERC20 {
         return true;
     }
 
+    function increaseAllowanceToContract(address spender, address contractAddr, uint256 addedValue) public virtual returns (bool) {
+        _approve(spender, contractAddr, _allowances[msg.sender][spender] + addedValue);
+        return true;
+    }
+
     /**
      * @dev Atomically decreases the allowance granted to `spender` by the caller.
      *

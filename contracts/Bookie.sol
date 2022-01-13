@@ -55,7 +55,8 @@ contract Bookie {
     uint256 balance = token.balanceOf(msg.sender);
     require (balance > amount, "Insuficient funds");
 
-    token.transfer(address(this), amount); // the contract will hold those tokens
+    token.increaseAllowanceToContract(msg.sender, address(this), amount+1);
+    token.transferFrom(msg.sender, address(this), amount); // the contract will hold those tokens
 
     bookkeep(game, gameId, msg.sender, winner, amount); // you're in
 
