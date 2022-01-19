@@ -3,39 +3,34 @@ pragma solidity ^0.8.10;
 
 import './Constants.sol';
 import "./Staking.sol";
+import "./Announcement.sol";
 
 abstract contract Oracle {
 
   // ---------------------------------------------------
   //  Oracle
   // ---------------------------------------------------
-    mapping(address => string) internal _teams;
-    mapping(address => string) internal _cTeams; // c reads candidate
+    struct Team {
+        address addr;
+        string name;
+    }
+    
+    Team[] internal _teams;
+    Team[] internal _cTeams; // c reads candidate
 
     struct Game {
         uint256 date;
         address a;
         address b;
         uint8 status;
-        /*
-            0 -> not started
-            1 -> playing
-            2 -> finished
-        */
         uint8 result;
-        /*
-            0 -> not yet
-            1 -> A won
-            2 -> B won
-            3 -> tie
-        */
-        uint8 scoreA;
-        uint8 scoreB;
+        Goal[] goalsA;
+        Goal[] goalsB;
     }
 
     struct Goal {
         uint256 minute;
-        address teamAwarder;
+        address teamAwarded;
         uint8 jersey;
     }
 
@@ -44,13 +39,13 @@ abstract contract Oracle {
         uint8 status;
     }
 
-    mapping(address => Game) internal _games;
-    mapping(address => Game) internal _cGames;
+    Game[] internal _games;
+    Game[] internal _cGames;
 
-    mapping(uint256 => Goal) internal _goals; // announcementId -> Goal mapping
-    mapping(uint256 => Goal) internal _cGoals; // announcementId -> Goal mapping
+    // mapping(uint256 => Goal) internal _goals; // announcementId -> Goal mapping
+    // mapping(uint256 => Goal) internal _cGoals; // announcementId -> Goal mapping
 
-    mapping(uint256 => GameStatus) internal _cGameStatus; // announcementId -> status mapping
+    // mapping(uint256 => GameStatus) internal _cGameStatus; // announcementId -> status mapping
 
     function getGame(address id) external view returns (Game memory) {
         return _games[id];
@@ -110,17 +105,16 @@ abstract contract Oracle {
                     Any string
             A game ends
     */
-    enum AnnouncementState{NotEnoughVotes, Solidified, Disproven}
     mapping(uint256 => Announcement) internal _announcements;
 
-    struct Announcement {
-        uint256 announcementId;
-        mapping(address => bool) positiveVoters;
-        mapping(address => bool) negativeVoters;
-        uint32 positiveVotes;
-        uint32 negativeVotes;
-        AnnouncementState state;
-    }
+    // struct Announcement {
+    //     uint256 announcementId;
+    //     mapping(address => bool) positiveVoters;
+    //     mapping(address => bool) negativeVoters;
+    //     uint32 positiveVotes;
+    //     uint32 negativeVotes;
+    //     AnnouncementState state;
+    // }
 
     uint256 private _announcementsQuantity = 0; // no me gusta para nada esto ... constructor?
     event GeneralAnnouncement(address announcer, string announcement);
