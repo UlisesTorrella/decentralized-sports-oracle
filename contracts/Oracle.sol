@@ -14,7 +14,7 @@ abstract contract Oracle {
         address addr;
         string name;
     }
-    
+
     Team[] internal _teams;
     Team[] internal _cTeams; // c reads candidate
 
@@ -39,6 +39,10 @@ abstract contract Oracle {
 
     function getGame(uint256 id) external view returns (Game memory) {
         return _games[id];
+    }
+
+    function getGameByAddress(address id) external view returns (Game memory) {
+        // do something xd
     }
 
     function getTeam(uint256 id) external view returns (Team memory) {
@@ -88,18 +92,41 @@ abstract contract Oracle {
     event AnnouncementDisproved(address announcement);
 
 
-    function announce(address announcement) virtual public returns (uint256 announcementId) {
+    function announce(address announcement, address payable oracle) virtual public returns (uint256 announcementId) {
         Announcement a = Announcement(announcement);
         require(isStaking(a.announcer()), "You must stake to announce in this oracle");
         require(a.getAnnouncementPosVotes() == 0 && a.getAnnouncementNegVotes() == 0, "This announcement has already been voted");
         // perhaps check if it was already announced? queue logic?
         uint256 index = _announcements.length;
-        _announcements.push(announcement);        
+        _announcements.push(announcement);
         // we accept the announcement into out candidates
-        a.reduce(_games, _teams);
+        a.reduce(oracle);
         // emit TeamWasAnnounced(msg.sender, teamId, name);
 
         return index;
+    }
+
+    function addGame(Game calldata _game) public {
+        // do something xd
+        /* _games.push(_game); */
+    }
+
+    function getGameByIndex(uint64 gameIndex) public returns (Game memory hola) {
+        // do something xd
+        /* return _games[gameIndex]; */
+    }
+
+    function saveGame(Game calldata game, uint64 gameIndex) public {
+        // do something xd
+        /* _games[gameIndex] = game; */
+    }
+
+    function addGoalA(Game calldata game, Goal calldata goal) public {
+        // do something xd
+    }
+
+    function addGoalB(Game calldata game, Goal calldata goal) public {
+        // do something xd
     }
 
     // function getAnnouncedTeamName(address teamId) public view returns (string memory teamName) {

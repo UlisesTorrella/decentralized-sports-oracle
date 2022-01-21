@@ -51,7 +51,7 @@ abstract contract Announcement {
 
     uint256 totalStakers = _oracle.getTotalStakers();
 
-    if (_positiveVotes > totalStakers/2 && _state == AnnouncementState.NotEnoughVotes) { 
+    if (_positiveVotes > totalStakers/2 && _state == AnnouncementState.NotEnoughVotes) {
         // solidify announcement
         emit Solidified();
         _state = AnnouncementState.Solidified;
@@ -66,7 +66,7 @@ abstract contract Announcement {
 
     uint256 totalStakers = _oracle.getTotalStakers();
 
-    if (_negativeVotes > totalStakers/2 && _state == AnnouncementState.NotEnoughVotes) { 
+    if (_negativeVotes > totalStakers/2 && _state == AnnouncementState.NotEnoughVotes) {
         // reject announcement
         emit Rejected();
         _state = AnnouncementState.Rejected;
@@ -75,11 +75,12 @@ abstract contract Announcement {
     return (_positiveVotes, _negativeVotes);
   }
 
-  
-  function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) virtual external returns(Oracle.Game[] calldata, Oracle.Team[] calldata);
+
+  /* function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) virtual external returns(Oracle.Game[] calldata, Oracle.Team[] calldata); */
+  function reduce(address payable oracle) virtual external {}
 
 
-  // getters 
+  // getters
   function getAnnouncementState() public view returns (AnnouncementState state) {
       return _state;
   }
@@ -102,25 +103,29 @@ contract TeamAnnouncement is Announcement {
     _name = name_;
   }
 
-  function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) override virtual external returns(Oracle.Game[] calldata, Oracle.Team[] calldata){
-    return (games, teams);
+  function reduce(address payable oracle) override external {
+    /* return (games, teams); */
   }
 }
 
 contract GameAnnouncement is Announcement {
 
   Oracle.Game _game;
+  Oracle.Goal[] _goalsA;
+  Oracle.Goal[] _goalsB;
 
   constructor(address payable oracle, address teamA, address teamB, uint32 date) Announcement(oracle) {
     _game = Oracle.Game({date: date, a: teamA, b: teamB,
                   status: Constants.UNSTARTED,
                   result: Constants.NOTRESULTYET,
-                  scoreA: Constants.NOTRESULTYET,
-                  scoreB: Constants.NOTRESULTYET});
+                  goalsA: _goalsA,
+                  goalsB: _goalsB});
   }
 
-  function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) override external returns(Oracle.Game[] calldata, Oracle.Team[] calldata){
-    games.push(_game);
+  /* function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) override external returns(Oracle.Game[] calldata, Oracle.Team[] calldata){ */
+  function reduce(address payable oracle) override external {
+    Oracle o = Oracle(oracle);
+    o.addGame(_game);
     // return (games, teams);
   }
 }
@@ -135,16 +140,20 @@ contract GoalAnnouncement is Announcement {
     _goal = Oracle.Goal({minute: minute, teamAwarded: teamAwarded, jersey: jersey});
   }
 
-  function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) override external returns(Oracle.Game[] calldata, Oracle.Team[] calldata){
-    Oracle.Game calldata game = games[_gameIndex];
+  function reduce(address payable oracle) override external {
+    Oracle o = Oracle(oracle);
+    Oracle.Game memory game = o.getGameByIndex(_gameIndex); //games[_gameIndex];
     if (game.a == _goal.teamAwarded) {
-      game.goalsA.push(_goal);
+      /* game.goalsA.push(_goal); */
+      o.addGoalA(game, _goal);
     }
-    require(game.b == _goal.teamAwarded || "Imposible to award a goal to this team in this game");
-    game.goalsB.push(_goal);
+    require(game.b == _goal.teamAwarded, "Imposible to award a goal to this team in this game");
+    /* game.goalsB.push(_goal); */
+    o.addGoalB(game, _goal);
     // is game a reference? do this just change the state? who knows
-    games[_gameIndex] = game;
-    return (games, teams);
+
+    o.saveGame(game, _gameIndex); /* games[_gameIndex] = game; */
+    /* return (games, teams); */
   }
 
 }
