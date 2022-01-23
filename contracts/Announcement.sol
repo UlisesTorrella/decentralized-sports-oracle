@@ -13,7 +13,7 @@ abstract contract Announcement {
   uint32 private _negativeVotes;
   AnnouncementState private _state;
 
-  Oracle private _oracle;
+  Oracle _oracle;
   address public announcer;
 
 
@@ -77,7 +77,7 @@ abstract contract Announcement {
 
 
   /* function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) virtual external returns(Oracle.Game[] calldata, Oracle.Team[] calldata); */
-  function reduce(address payable oracle) virtual external {}
+  function reduce() virtual external view returns (Oracle.Game[] memory, Oracle.Team[] memory) {}
 
 
   // getters
@@ -103,57 +103,62 @@ contract TeamAnnouncement is Announcement {
     _name = name_;
   }
 
-  function reduce(address payable oracle) override external {
-    /* return (games, teams); */
+  function reduce() override external view returns (Oracle.Game[] memory, Oracle.Team[] memory){
+    Oracle.Team[] memory teams = new Oracle.Team[](1);
+    Oracle.Game[] memory games = new Oracle.Game[](0);
+
+    teams[0] = Oracle.Team({
+      addr: address(this),
+      name: _name
+    });
+    return (games, teams);
   }
 }
 
-contract GameAnnouncement is Announcement {
+// contract GameAnnouncement is Announcement {
 
-  Oracle.Game _game;
-  Oracle.Goal[] _goalsA;
-  Oracle.Goal[] _goalsB;
+//   Oracle.Game _game;
+//   Oracle.Goal[] _goalsA;
+//   Oracle.Goal[] _goalsB;
 
-  constructor(address payable oracle, address teamA, address teamB, uint32 date) Announcement(oracle) {
-    _game = Oracle.Game({date: date, a: teamA, b: teamB,
-                  status: Constants.UNSTARTED,
-                  result: Constants.NOTRESULTYET,
-                  goalsA: _goalsA,
-                  goalsB: _goalsB});
-  }
+//   constructor(address payable oracle, address teamA, address teamB, uint32 date) Announcement(oracle) {
+//     _game = Oracle.Game({date: date, a: teamA, b: teamB,
+//                   status: Constants.UNSTARTED,
+//                   result: Constants.NOTRESULTYET,
+//                   goalsA: _goalsA,
+//                   goalsB: _goalsB});
+//   }
 
-  /* function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) override external returns(Oracle.Game[] calldata, Oracle.Team[] calldata){ */
-  function reduce(address payable oracle) override external {
-    Oracle o = Oracle(oracle);
-    o.addGame(_game);
-    // return (games, teams);
-  }
-}
+//   /* function reduce(Oracle.Game[] calldata games, Oracle.Team[] calldata teams) override external returns(Oracle.Game[] calldata, Oracle.Team[] calldata){ */
+//   function reduce() override external returns(Oracle.Game[] memory, Oracle.Team[] memory) {
+//     // return (games, teams);
+//   }
+// }
 
-contract GoalAnnouncement is Announcement {
+// contract GoalAnnouncement is Announcement {
 
-  uint64 _gameIndex;
-  Oracle.Goal _goal;
+//   uint64 _gameIndex;
+//   Oracle.Goal _goal;
 
-  constructor(address payable oracle, uint64 gameIndex, uint256 minute, address teamAwarded, uint8 jersey) Announcement(oracle) {
-    _gameIndex = gameIndex;
-    _goal = Oracle.Goal({minute: minute, teamAwarded: teamAwarded, jersey: jersey});
-  }
+//   constructor(address payable oracle, uint64 gameIndex, uint256 minute, address teamAwarded, uint8 jersey) Announcement(oracle) {
+//     _gameIndex = gameIndex;
+//     _goal = Oracle.Goal({minute: minute, teamAwarded: teamAwarded, jersey: jersey});
+//   }
 
-  function reduce(address payable oracle) override external {
-    Oracle o = Oracle(oracle);
-    Oracle.Game memory game = o.getGameByIndex(_gameIndex); //games[_gameIndex];
-    if (game.a == _goal.teamAwarded) {
-      /* game.goalsA.push(_goal); */
-      o.addGoalA(game, _goal);
-    }
-    require(game.b == _goal.teamAwarded, "Imposible to award a goal to this team in this game");
-    /* game.goalsB.push(_goal); */
-    o.addGoalB(game, _goal);
-    // is game a reference? do this just change the state? who knows
+//   function reduce(address payable oracle) override external {
+//     Oracle o = Oracle(oracle);
+//     Oracle.Game memory game = o.getGameByIndex(_gameIndex); //games[_gameIndex];
+//     if (game.a == _goal.teamAwarded) {
+//       /* game.goalsA.push(_goal); */
+//       o.addGoalA(game, _goal);
+//     }
+//     require(game.b == _goal.teamAwarded, "Imposible to award a goal to this team in this game");
+//     /* game.goalsB.push(_goal); */
+//     o.addGoalB(game, _goal);
+//     // is game a reference? do this just change the state? who knows
 
-    o.saveGame(game, _gameIndex); /* games[_gameIndex] = game; */
-    /* return (games, teams); */
-  }
+//     o.saveGame(game, _gameIndex); /* games[_gameIndex] = game; */
+//     /* return (games, teams); */
+//   }
 
-}
+// }

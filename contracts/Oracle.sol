@@ -19,6 +19,7 @@ abstract contract Oracle {
     Team[] internal _cTeams; // c reads candidate
 
     struct Game {
+        address addr;
         uint256 date;
         address a;
         address b;
@@ -47,6 +48,14 @@ abstract contract Oracle {
 
     function getTeam(uint256 id) external view returns (Team memory) {
         return _teams[id];
+    }
+
+    function getTeams() external view returns (Team[] memory) {
+        return _teams;
+    }
+
+    function getGames() external view returns (Game[] memory) {
+        return _games;
     }
 
     // Staking
@@ -92,7 +101,31 @@ abstract contract Oracle {
     event AnnouncementDisproved(address announcement);
 
 
-    function announce(address announcement, address payable oracle) virtual public returns (uint256 announcementId) {
+    function storeCandidates(Game[] memory games, Team[] memory teams) internal {
+        for(uint i=0; i<games.length; i++) {
+            // look for existing game and apply changes
+            // Game memory game = Game({
+            //     addr: games[i].addr,
+            //     date: games[i].date,
+            //     a: games[i].a,
+            //     b: games[i].b,
+            //     status: games[i].status,
+            //     result: games[i].result,
+            //     goalsA: games[i].goalsA,
+            //     goalsB: games[i].goalsB
+            // });
+            // _cGames.push(game);
+        }
+        for(uint j=0; j<teams.length; j++) {
+            Team memory team = Team({
+                addr: teams[j].addr,
+                name: teams[j].name
+            });
+            _cTeams.push(team);
+        }
+    }
+
+    function announce(address announcement) virtual public returns (uint256 announcementId) {
         Announcement a = Announcement(announcement);
         require(isStaking(a.announcer()), "You must stake to announce in this oracle");
         require(a.getAnnouncementPosVotes() == 0 && a.getAnnouncementNegVotes() == 0, "This announcement has already been voted");
@@ -100,34 +133,37 @@ abstract contract Oracle {
         uint256 index = _announcements.length;
         _announcements.push(announcement);
         // we accept the announcement into out candidates
-        a.reduce(oracle);
+        Game[] memory changeGames;
+        Team[] memory changeTeams;
+        (changeGames, changeTeams) = a.reduce();
+        storeCandidates(changeGames, changeTeams);
         // emit TeamWasAnnounced(msg.sender, teamId, name);
 
         return index;
     }
 
-    function addGame(Game calldata _game) public {
-        // do something xd
-        /* _games.push(_game); */
-    }
+    // function addGame(Game calldata _game) public {
+    //     // do something xd
+    //     /* _games.push(_game); */
+    // }
 
-    function getGameByIndex(uint64 gameIndex) public returns (Game memory hola) {
-        // do something xd
-        /* return _games[gameIndex]; */
-    }
+    // function getGameByIndex(uint64 gameIndex) public returns (Game memory hola) {
+    //     // do something xd
+    //     /* return _games[gameIndex]; */
+    // }
 
-    function saveGame(Game calldata game, uint64 gameIndex) public {
-        // do something xd
-        /* _games[gameIndex] = game; */
-    }
+    // function saveGame(Game calldata game, uint64 gameIndex) public {
+    //     // do something xd
+    //     /* _games[gameIndex] = game; */
+    // }
 
-    function addGoalA(Game calldata game, Goal calldata goal) public {
-        // do something xd
-    }
+    // function addGoalA(Game calldata game, Goal calldata goal) public {
+    //     // do something xd
+    // }
 
-    function addGoalB(Game calldata game, Goal calldata goal) public {
-        // do something xd
-    }
+    // function addGoalB(Game calldata game, Goal calldata goal) public {
+    //     // do something xd
+    // }
 
     // function getAnnouncedTeamName(address teamId) public view returns (string memory teamName) {
     //     return _cTeams[teamId];
