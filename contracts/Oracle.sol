@@ -29,6 +29,8 @@ abstract contract Oracle {
         Goal[] goalsB;
     }
 
+    // sacar goles
+
     struct Goal {
         uint256 minute;
         address teamAwarded;

@@ -13,7 +13,7 @@ abstract contract Announcement {
   uint32 private _negativeVotes;
   AnnouncementState private _state;
 
-  Oracle _oracle;
+  Oracle private _oracle;
   address public announcer;
 
 
