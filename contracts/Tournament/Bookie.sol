@@ -18,7 +18,7 @@ contract Bookie {
 
   event Bet(address who, address game, address win, uint256 amount);
 
-  function bookkeep(Tournament.Game memory game, address gameId, address player, address winner, uint256 amount) internal {
+  function bookkeep(FutbolTournament.Game memory game, address gameId, address player, address winner, uint256 amount) internal {
     if(game.a == winner) {
       _pots[gameId].betsForA[player] = amount;
       _pots[gameId].sumForA += amount;
@@ -29,7 +29,7 @@ contract Bookie {
     }
   }
 
-  function calculateReturn(Tournament.Game memory game, address gameId, address player) internal view returns (uint256 earned) {
+  function calculateReturn(FutbolTournament.Game memory game, address gameId, address player) internal view returns (uint256 earned) {
     Pot storage pot = _pots[gameId];
     uint256 totalFunds = pot.sumForA + pot.sumForB;
 
@@ -47,9 +47,9 @@ contract Bookie {
   */
   function placeBet(address c, address gameId, address winner, uint256 amount) external returns (address) {
     // check for game existence and non-started status
-    Tournament oracle = Tournament(payable(c));
+    FutbolTournament oracle = FutbolTournament(payable(c));
     Token token = Token(c);
-    Tournament.Game memory game = oracle.getGameByAddress(gameId);
+    FutbolTournament.Game memory game = oracle.getGameByAddress(gameId);
     require(game.a == winner || game.b == winner, "You are betting on a team thats not in this game");
     require(game.status == Constants.UNSTARTED, "This game is no longer taking bets");
     uint256 balance = token.balanceOf(msg.sender);
@@ -69,7 +69,7 @@ contract Bookie {
   */
   function cashBet(address c, address gameId) external returns (uint256 newBalance) {
     require(_pots[gameId].betsForA[msg.sender] > 0 || _pots[gameId].betsForB[msg.sender] > 0, "You have no bets in this pot");
-    Tournament.Game memory game = Tournament(payable(c)).getGameByAddress(gameId);
+    FutbolTournament.Game memory game = FutbolTournament(payable(c)).getGameByAddress(gameId);
     require(game.status != Constants.FINISHED, "The game hasn't finished yet");
 
     Token(c).transfer(address(this), calculateReturn(game, gameId, msg.sender));

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.10;
 
 import '../Protocol/Announcement.sol';
+import '../Tournament/Tournament.sol';
 
 contract TeamAnnouncement is Announcement {
 
@@ -11,11 +12,11 @@ contract TeamAnnouncement is Announcement {
     _name = name_;
   }
 
-  function reduce() override external view returns (Oracle.Game[] memory, Oracle.Team[] memory){
-    Oracle.Team[] memory teams = new Oracle.Team[](1);
-    Oracle.Game[] memory games = new Oracle.Game[](0);
+  function reduce() override external view returns (FutbolTournament.Game[] memory, FutbolTournament.Team[] memory){
+    FutbolTournament.Team[] memory teams = new FutbolTournament.Team[](1);
+    FutbolTournament.Game[] memory games = new FutbolTournament.Game[](0);
 
-    teams[0] = Oracle.Team({
+    teams[0] = FutbolTournament.Team({
       addr: address(this),
       name: _name
     });
