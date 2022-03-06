@@ -15,7 +15,9 @@ abstract contract Oracle {
     // State
     State internal _state;
 
-    function reduce(Announcement a) virtual internal returns (State state);
+    function reduce(Announcement a) virtual internal returns (State state) {
+        return _state;
+    }
 
     function solidify(Announcement a) internal {
         reduce(a);

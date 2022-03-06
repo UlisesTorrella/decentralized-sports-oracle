@@ -12,7 +12,7 @@ contract TeamAnnouncement is Announcement {
     _name = name_;
   }
 
-  function reduce() override external view returns (FutbolTournament.Game[] memory, FutbolTournament.Team[] memory){
+  function reduce() external view returns (FutbolTournament.Game[] memory, FutbolTournament.Team[] memory){
     FutbolTournament.Team[] memory teams = new FutbolTournament.Team[](1);
     FutbolTournament.Game[] memory games = new FutbolTournament.Game[](0);
 
